@@ -2,6 +2,7 @@ testbenches=Dumb.tb FoldedMultiplier.tb SignedVsUnsigned.tb Ex3.tb Ex5.tb Ex7a.t
 
 compile:
 	mkdir -p buildDir
+	sudo chmod 777 -R buildDir
 	bsc -u -sim -bdir buildDir -info-dir buildDir -simdir buildDir -vdir buildDir -aggressive-conditions -show-range-conflict -keep-fires TestBench.bsv
 
 %.tb: compile

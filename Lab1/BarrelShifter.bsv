@@ -47,7 +47,7 @@ module mkTbBS();
             let in <- in_random.next;
             let shiftBy <- shiftBy_random.next;
             let resu = barrelShiftRight(in, shiftBy);
-            $display("ShiftRight(%d, %d) = %d", in, shiftBy, resu);
+            // $display("ShiftRight(%d, %d) = %d", in, shiftBy, resu);
             Bit#(32) real_resu = in >> shiftBy;
             if(resu != real_resu) begin
                 $display("ERROR\n");

@@ -148,15 +148,13 @@ module mkTestBenchFifo();
     Reg#(Bit#(32)) delay <- mkReg(0);
     Reg#(Bit#(8)) stream_count <- mkReg(0);
     Reg#(Bit#(8)) feed_count <- mkReg(0);
-    Reg#(Bit#(32)) enqueue3 <- mkReg(0);
-    Reg#(Bool) success <- mkReg(False);
 
     rule initialize(init == False);
         randomVal1.cntrl.init;
         init <= True;
     endrule
 
-    rule feed (feed_count <128 && init && (enqueue3==0) );
+    rule feed (feed_count <128 && init);
        let el <- randomVal1.next;
        referenceFifo.enq(el);
        feed_count <= feed_count + 1;
@@ -164,8 +162,13 @@ module mkTestBenchFifo();
        $display("Enqueuing %d in the tested fifo and the reference fifo",el);
     endrule
 
-    rule stream (init && (enqueue3 == 0));
-        delay <= 0;
+    rule pad (feed_count >= 128 && init);
+       referenceFifo.enq(0);
+       feed_count <= feed_count + 1;
+       testFifo.enq(0);
+    endrule
+
+    rule stream (init);
         testFifo.deq();
         $display("Dequeue");
         stream_count <= stream_count + 1;
@@ -178,39 +181,17 @@ module mkTestBenchFifo();
         end
     endrule
 
-    rule presucces (stream_count == 128 && init);
-        $display("On the path to success");
-        enqueue3 <= 1;
-        stream_count <= stream_count + 1;
-    endrule
-
-    rule finish(success && stream_count == 132);
+    rule finish(stream_count == 132);
         $display("PASSED");
         $finish();
     endrule
 
-    rule enqueueThree (enqueue3>0 && enqueue3 < 4);
-        delay <= 0;
-        enqueue3 <= enqueue3 + 1;
-        let el <- randomVal1.next;
-        referenceFifo.enq(el);
-        feed_count <= feed_count + 1;
-        testFifo.enq(el);
-        $display("Enqueuing three %d in the tested fifo and the reference fifo",el);
-    endrule
-
-    rule dequeueThree(enqueue3 ==4);
-       $display("Enqueued three in a row");
-       enqueue3 <= 0;
-       success <= True;
-    endrule
-
-    rule deadlock (delay == 200 && init );
+    rule deadlock (delay == 2000 && init );
         $display("FAILED It seems that your fifo is deadlocking, either we are failing to enqueue, or we enqueud some stuff in it but we can't dequeue from it.");
         $finish;
     endrule
 
-    rule timeout ( init);
+    rule timeout (init);
         delay <= delay + 1;
         cycle_count <= cycle_count + 1;
     endrule

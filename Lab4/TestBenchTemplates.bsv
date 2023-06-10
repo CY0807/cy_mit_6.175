@@ -163,6 +163,7 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
     // Forces the order of the rules so the cycle boundary is printed first.
     // It is really confusing when the cycle_print rule fires in the middle of
     // the clock cycle.
+    /*
     (* execution_order = "cycle_print, init" *)
     (* execution_order = "cycle_print, feed_inputs" *)
     (* execution_order = "cycle_print, check_outputs" *)
@@ -172,9 +173,12 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
     (* execution_order = "cycle_print, check_fifos_first" *)
     (* execution_order = "cycle_print, stop_tb" *)
     (* execution_order = "cycle_print, cycle_inc" *)
+    
     rule cycle_print;
         $display("= cycle %0d ====================", cycle);
+        let a = cycle;
     endrule
+    */
 
     rule init(cycle == 0);
         randomA.cntrl.init;
@@ -189,7 +193,7 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
             let a <- randomData.next;
             fifo.enq( a );
             ref_fifo.enq( a );
-            $display("\tEnqueued %0d", a);
+            //$display("\tEnqueued %0d", a);
             input_count <= input_count + 1;
         end
     endrule
@@ -199,7 +203,7 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
         if( rnd != 0 ) begin // P = 3/4
             let b = fifo.first;
             fifo.deq;
-            $display("\tDequeued %0d", b);
+            //$display("\tDequeued %0d", b);
             let c = ref_fifo.first;
             ref_fifo.deq;
             if( b != c ) begin
@@ -215,7 +219,7 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
         if( has_clear && (rnd == 0) ) begin // P = 1/16
             fifo.clear;
             ref_fifo.clear;
-            $display("\tCleared fifo");
+            // $display("\tCleared fifo");
         end
     endrule
 
@@ -254,7 +258,7 @@ module mkTbFunctionalTemplate( Fifo#(n, Bit#(m)) fifo, FifoType fifo_type, Bool 
 
     rule stop_tb (input_count == 1024 || cycle == 4096);
         if( input_count == 1024 ) begin
-            $display("\tFinished Test");
+            $display("\tFinished Test, PASS");
             $display("\tOutput count = %0d", output_count);
         end else begin
             $display("\tERROR: Reached maximum cycle count!");

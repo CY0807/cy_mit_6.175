@@ -10,14 +10,14 @@ module mkTbDumb();
     return tb;
 endmodule
 
-/*
+
 (* synthesize *)
 module mkTbFoldedMultiplier();
     Multiplier#(8) dut <- mkFoldedMultiplier();
     Empty tb <- mkTbMulModule(dut, multiply_signed, True);
     return tb;
 endmodule
-*/
+
 
 /*Exercise 1
 In TestBench.bsv, write a test bench mkTbSignedVsUnsigned that tests if multiply_signed produces the same output as multiply_unsigned. Compile this test bench as described above and run it.

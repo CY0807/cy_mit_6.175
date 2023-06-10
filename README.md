@@ -4,9 +4,11 @@
 
 1-bit的多选器结构如下：
 
-<img src="./image/image-20230610101746035.png" alt="image-20230610101746035" style="zoom:50%;" />
+<img src="./image/image-20230610101746035.png" alt="image-20230610101746035" style="zoom: 33%;" />
 
-实验中采用多个并行的1-bit多选器实现多态的n-bit的多选器：
+实验中采用多个并行的1-bit多选器实现多态的n-bit的多选器；
+
+注意：在function中，输入参数带有numeric type n可以实现多态；
 
 ````
 function Bit#(n) multiplexer_n(Bit#(n) a, Bit#(n) b, Bit#(1) sel);
@@ -18,11 +20,15 @@ function Bit#(n) multiplexer_n(Bit#(n) a, Bit#(n) b, Bit#(1) sel);
 endfunction
 ````
 
+仿真结果：
+
+<img src="./image/image-20230610104834353.png" alt="image-20230610104834353" style="zoom:33%;" />
+
 ## 加法器
 
 本实验中实现的加法器主要分为两种，第一种为ripple carry加法器：
 
-<img src="./image/image-20230610094814415.png" alt="image-20230610094814415" style="zoom: 50%;" />
+<img src="./image/image-20230610094814415.png" alt="image-20230610094814415" style="zoom: 33%;" />
 
 其接口为：
 
@@ -48,7 +54,7 @@ endmodule
 
 第二种为carry select加法器：
 
-<img src="./image/image-20230610095250158.png" alt="image-20230610095250158" style="zoom: 50%;" />
+<img src="./image/image-20230610095250158.png" alt="image-20230610095250158" style="zoom: 33%;" />
 
 对高四位的加法同时计算有\无进位的结果，再通过低四位的结果进行选择，逻辑上延时减半但面积增加了，核心代码如下：
 
@@ -82,6 +88,12 @@ module mkTbRCAdder();
 endmodule
 ````
 
+仿真结果：
+
+<img src="./image/image-20230610104953461.png" alt="image-20230610104953461" style="zoom:33%;" />
+
+<img src="./image/image-20230610105025692.png" alt="image-20230610105025692" style="zoom:33%;" />
+
 ## 桶形移位器
 
 桶形移位器包含多个串联的2的幂次方的移位器，通过多选器来决定是否使用某个移位器，来达到任意数的移位功能，本实验以右移为例，首先实现右移2次幂的电路：
@@ -111,6 +123,10 @@ function Bit#(32) barrelShiftRight(Bit#(32) in, Bit#(5) shiftBy);
 endfunction
 ````
 
+仿真结果：
+
+<img src="./image/image-20230610105205108.png" alt="image-20230610105205108" style="zoom:33%;" />
+
 # Lab2
 
 本实验主要介绍了如何将逻辑电路转变为elastic和inelastic的pipeline电路
@@ -118,67 +134,16 @@ endfunction
 以fft电路为例，其逻辑电路核心如下：
 
 ````
-module mkFftCombinational(Fft);
-    FIFOF#(Vector#(FftPoints, ComplexData)) inFifo <- mkFIFOF;
-    FIFOF#(Vector#(FftPoints, ComplexData)) outFifo <- mkFIFOF;   
-
-    rule doFft;
-            inFifo.deq;
-            Vector#(4, Vector#(FftPoints, ComplexData)) stage_data;
-            stage_data[0] = inFifo.first;
-
-            for (StageIdx stage = 0; stage < 3; stage = stage + 1) begin
-                stage_data[stage + 1] = stage_f(stage, stage_data[stage]);
-            end
-            outFifo.enq(stage_data[3]);
-    endrule
-
-    method Action enq(Vector#(FftPoints, ComplexData) in);
-        inFifo.enq(in);
-    endmethod
-
-    method ActionValue#(Vector#(FftPoints, ComplexData)) deq;
-        outFifo.deq;
-        return outFifo.first;
-    endmethod
-endmodule
+for (StageIdx stage = 0; stage < 3; stage = stage + 1) begin
+	stage_data[stage + 1] = stage_f(stage, stage_data[stage]);
+end
 ````
 
-1、转变为inelastic pipeline电路：采用寄存器存储每一个流水线级的中间数据，流水线需要严格按照时序输入，不然会造成数据错误：
+1、转变为inelastic pipeline电路：采用寄存器存储每一个流水线级的中间数据，流水线需要严格按照时序输入，不然会造成数据错误;
 
-````
-module mkFftInelastic(Fft);
-    FIFOF#(Vector#(FftPoints, ComplexData)) inFifo <- mkFIFOF;
-    FIFOF#(Vector#(FftPoints, ComplexData)) outFifo <- mkFIFOF;
-    Reg#(Maybe#(Vector#(FftPoints, ComplexData))) regS1 <- mkDReg(tagged Invalid);
-    Reg#(Maybe#(Vector#(FftPoints, ComplexData))) regS2 <- mkDReg(tagged Invalid);
+仿真结果：
 
-    rule fftS1;
-        let s1_ret = stage_f(0, inFifo.first);
-        regS1 <= tagged Valid s1_ret;
-        inFifo.deq;
-    endrule
-
-    rule fftS2 if(isValid(regS1));
-        let s2_ret = stage_f(1, fromMaybe(?, regS1));
-        regS2 <= tagged Valid s2_ret;
-    endrule
-
-    rule fftS3 if(isValid(regS2));
-        let s3_ret = stage_f(2, fromMaybe(?, regS2));
-        outFifo.enq(s3_ret);
-    endrule
-
-    method Action enq(Vector#(FftPoints, ComplexData) in);
-        inFifo.enq(in);
-    endmethod
-
-    method ActionValue#(Vector#(FftPoints, ComplexData)) deq;
-        outFifo.deq;
-        return outFifo.first;
-    endmethod
-endmodule
-````
+<img src="./image/image-20230610125909891.png" alt="image-20230610125909891" style="zoom:33%;" />
 
 2、转变为elastic pipeline电路：采用fifo衔接前后流水线级的中间数据，fifo能保持数据并有安全的接口，对输入输出端有很大灵活性
 
@@ -186,8 +151,6 @@ endmodule
 module mkFftElastic(Fft);
     FIFOF#(Vector#(FftPoints, ComplexData)) inFifo <- mkFIFOF;
     FIFOF#(Vector#(FftPoints, ComplexData)) outFifo <- mkFIFOF;
-    //Fifo#(3, Vector#(FftPoints, ComplexData)) fifoS1 <- mkConflictFreeFifo3();
-    //Fifo#(3, Vector#(FftPoints, ComplexData)) fifoS2 <- mkConflictFreeFifo3();
     FIFO#(Vector#(FftPoints, ComplexData)) fifoS1 <- mkSizedFIFO(3);
     FIFO#(Vector#(FftPoints, ComplexData)) fifoS2 <- mkSizedFIFO(3);
 
@@ -220,11 +183,34 @@ module mkFftElastic(Fft);
 endmodule
 ````
 
+仿真结果：
+
+<img src="./image/image-20230610130002337.png" alt="image-20230610130002337" style="zoom:33%;" />
+
 # Lab3
 
+实验三的主要内容为采用folded的方式来设计移位累加原理的乘法器：
 
+<img src="./image/image-20230610130112483.png" alt="image-20230610130112483" style="zoom:33%;" />
+
+核心代码如下，需要注意的地方：
+
+1、interface的guard
+
+2、数据位宽
+
+3、移位累加原理的乘法器仅适用于正数乘法
+
+4、在interface中，可以在“#”后定义参数实现多态
 
 ````
+interface Multiplier#(numeric type n);
+    method Bool start_ready();
+    method Action start(Bit#(n) a, Bit#(n) b);
+    method Bool result_ready();
+    method ActionValue#(Bit#(TAdd#(n,n))) result();
+endinterface
+
 module mkFoldedMultiplier(Multiplier#(n)) provisos(Add#(1, a__, n));
     Reg#(Bit#(TAdd#(TLog#(n),1))) cnt <- mkReg(fromInteger(valueOf(n)+1));
     Reg#(Bit#(n)) a <- mkRegU();
@@ -264,4 +250,56 @@ module mkFoldedMultiplier(Multiplier#(n)) provisos(Add#(1, a__, n));
     endmethod
 endmodule
 ````
+
+此外实验还给出了Booth原理的乘法器可用于有符号数乘法，在此不一一例举了。
+
+编译warning：
+
+<img src="./image/image-20230610134251599.png" alt="image-20230610134251599" style="zoom:33%;" />
+
+仿真结果：
+
+
+
+<img src="./image/image-20230610134228323.png" alt="image-20230610134228323" style="zoom:33%;" />
+
+# Lab4
+
+本实验实现了n长度的四种FIFO：Conflict FIFO、Bypass FIFO、Pipeline FIFO、Conflict Free FIFO，其中主要用到了Ehr寄存器实现了rule之间优先级处理：
+
+<img src="./image/image-20230610160343325.png" alt="image-20230610160343325" style="zoom:33%;" />
+
+1、Confict FIFO：rule之间涉及到double write冲突，因此在编译时有warning：
+
+<img src="./image/image-20230610161729546.png" alt="image-20230610161729546" style="zoom:33%;" />
+
+仿真结果：
+
+<img src="./image/image-20230610162014681.png" alt="image-20230610162014681" style="zoom:33%;" />
+
+2、Bypass FIFO：rule enq中采用Ehr的优先级0操作输入输出指针、empty、full信号，在rule dep中采用优先级1操作这些变量。
+
+编译仿真结果：
+
+<img src="./image/image-20230610162137381.png" alt="image-20230610162137381" style="zoom:33%;" />
+
+3、Pipeline FIFO：rule deq中采用Ehr的优先级0操作输入输出指针、empty、full信号，在rule enq中采用优先级1操作这些变量。
+
+编译仿真结果：
+
+<img src="./image/image-20230610162728613.png" alt="image-20230610162728613" style="zoom:33%;" />
+
+4、Conflict Free FIFO：rule enq和deq中都只采用empty、full优先级0，并用优先级0采集输入输出的信号和数据，在rule canonicalize中，首先将输入输出信号置False，然后采用优先级1操作empty、full、enq和deq指针。
+
+编译仿真结果：
+
+<img src="./image/image-20230610163930122.png" alt="image-20230610163930122" style="zoom:33%;" />
+
+
+
+
+
+
+
+
 

@@ -45,9 +45,9 @@ module mkTbMulFunction(
                     Int#(n) a_signed = unpack(a);
                     Int#(n) b_signed = unpack(b);
                     Int#(TAdd#(n,n)) test_signed = unpack(test);
-                    $display("PASSED case %0d", cycle);
-                    $display("    if signed: %0d * %0d test function gave %0d", a_signed, b_signed, test_signed);
-                    $display("    if unsigned: %0d * %0d test function gave %0d", a, b, test);
+                    //$display("PASSED case %0d", cycle);
+                    //$display("    if signed: %0d * %0d test function gave %0d", a_signed, b_signed, test_signed);
+                    //$display("    if unsigned: %0d * %0d test function gave %0d", a, b, test);
                 end
             end
         end
@@ -102,9 +102,9 @@ module mkTbMulModule(
             Int#(n) a_signed = unpack(a);
             Int#(n) b_signed = unpack(b);
             Int#(TAdd#(n,n)) test_signed = unpack(test);
-            $display("PASSED case %0d", read_count);
-            $display("    if signed: %0d * %0d DUT gave %0d", a_signed, b_signed, test_signed);
-            $display("    if unsigned: %0d * %0d DUT gave %0d", a, b, test);
+            //$display("PASSED case %0d", read_count);
+            //$display("    if signed: %0d * %0d DUT gave %0d", a_signed, b_signed, test_signed);
+            //$display("    if unsigned: %0d * %0d DUT gave %0d", a, b, test);
         end
         read_count <= read_count + 1;
     endrule

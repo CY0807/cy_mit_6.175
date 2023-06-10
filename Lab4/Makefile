@@ -2,6 +2,7 @@ all: compile conflict pipeline bypass cfnc cf
 
 compile:
 	mkdir -p buildDir
+	sudo chmod 777 -R buildDir
 	bsc -u -sim -bdir buildDir -info-dir buildDir -simdir buildDir -vdir buildDir -aggressive-conditions -keep-fires TestBench.bsv
 
 conflict: compile

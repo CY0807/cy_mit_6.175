@@ -89,7 +89,7 @@ module mkFoldedMultiplier(Multiplier#(n)) provisos(Add#(1, a__, n));
     endmethod
 
     method Bool result_ready() ;
-        return True;
+        return cnt == fromInteger(valueOf(n));
     endmethod
 
     method ActionValue#(Bit#(TAdd#(n,n))) result() if (cnt == fromInteger(valueOf(n)));
