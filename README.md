@@ -295,7 +295,193 @@ endmodule
 
 <img src="./image/image-20230610163930122.png" alt="image-20230610163930122" style="zoom:33%;" />
 
+# Minist FIFO 设计与思考
 
+接口如下：
+
+````
+interface Fifo#(type t);
+    method Bool notFull;
+    method Action enq(t x);
+    method Bool notEmpty;
+    method Action deq;
+    method t first;
+endinterface
+````
+
+## 1 Pipeline FIFO
+
+长度为1，程序：
+
+````
+module mkMyPipelineFifo(Fifo#(t)) provisos (Bits#(t,tSz));
+    Reg#(t) data <- mkRegU();
+    Ehr#(2,Bool) empty <- mkEhr(True);
+    Ehr#(2,Bool) full <- mkEhr(False);
+
+    method Bool notEmpty;
+        return !empty[0];
+    endmethod
+
+    method t first if (empty[0]==False);
+        return data;
+    endmethod
+
+    method Action deq if (empty[0]==False);
+        empty[0] <= True;
+        full[0] <= False;
+    endmethod
+
+    method Bool notFull;
+        return !full[1];
+    endmethod
+
+    method Action enq(t x) if (full[1]==False);
+        full[1] <= True;
+        empty[1] <= False;
+        data <= x;
+    endmethod   
+endmodule
+````
+
+编译与功能、调度仿真：
+
+<img src="./image/image-20230610220646579.png" alt="image-20230610220646579" style="zoom:33%;" />
+
+## 2 Bypass FIFO
+
+长度为1，程序：
+
+````
+module mkMyBypassFifo(Fifo#(t)) provisos (Bits#(t,tSz));
+    Reg#(t) data <- mkRegU();
+    Ehr#(2,Bool) empty <- mkEhr(True);
+    Ehr#(2,Bool) full <- mkEhr(False);
+
+    method Bool notFull;
+        return !full[0];
+    endmethod
+
+    method Action enq(t x) if (full[0]==False);
+        full[0] <= True;
+        empty[0] <= False;
+        data <= x;
+    endmethod
+
+    method Bool notEmpty;
+        return !empty[1];
+    endmethod
+
+    method Action deq if (empty[1]==False);
+        empty[1] <= True;
+        full[1] <= False;
+    endmethod
+
+    method t first if (empty[1]==False);
+        return data;
+    endmethod
+endmodule
+````
+
+编译与功能、调度仿真：
+
+<img src="./image/image-20230610235933698.png" alt="image-20230610235933698" style="zoom:33%;" />
+
+## 3 Conflict Free FIFO
+
+长度为2，程序：
+
+````
+module mkMyCFFifo(Fifo#(t)) provisos (Bits#(t,tSz));
+    Vector#(2, Reg#(t)) data <- replicateM(mkRegU());
+    Reg#(Bool) empty <- mkReg(True);
+    Reg#(Bool) full <- mkReg(False);
+    Reg#(Bit#(2)) cnt <- mkReg(0);
+    Ehr#(2, Maybe#(t)) enqReq <- mkEhr(tagged Invalid);
+    Ehr#(2, Bool) deqReq <- mkEhr(False);
+    
+    rule canonicalize;
+        deqReq[1] <= False;
+        enqReq[1] <= tagged Invalid;
+
+        case (tuple2(enqReq[1], deqReq[1])) matches
+            {tagged Valid .dat, True}: begin
+                data[1] <= dat;
+            end
+            {tagged Valid .dat, False}: begin
+                cnt <= cnt + 1;
+                if(cnt == 0) begin
+                    data[1] <= dat;
+                    empty <= False;
+                end
+                else begin
+                    data[0] <= dat;
+                    full <= True;
+                end
+            end
+            {tagged Invalid, True}: begin
+                cnt <= cnt - 1;
+                if(cnt == 2) begin
+                    data[1] <= data[0];
+                    full <= False;
+                end
+                else begin
+                    empty <= True;
+                end
+            end
+            default: begin end
+        endcase  
+    endrule
+
+    method Bool notFull;
+        return !full;
+    endmethod
+
+    method Bool notEmpty;
+        return !empty;
+    endmethod
+
+    method t first if (empty==False);
+        return data[1]; 
+    endmethod
+
+    method Action enq(t x) if (full==False);
+        enqReq[0] <= tagged Valid x; 
+    endmethod
+
+    method Action deq if (empty==False);
+        deqReq[0] <= True;
+    endmethod
+endmodule
+````
+
+编译与功能、调度仿真：
+
+<img src="./image/image-20230610231040691.png" alt="image-20230610231040691" style="zoom:33%;" />
+
+## 4 总结
+
+1、并发关系
+
+（1）Pipeline FIFO：满时并发
+
+<img src="./image/image-20230611104523076.png" alt="image-20230611104523076" style="zoom: 50%;" />
+
+（2）Bypass FIFO：空时并发
+
+<img src="./image/image-20230611104545775.png" alt="image-20230611104545775" style="zoom:50%;" />
+
+（3）Conflict Free FIFO：不空不满时并发
+
+<img src="./image/image-20230610232736439.png" alt="image-20230610232736439" style="zoom: 50%;" />
+
+2、关键路径分析：
+
+（1）Pipeline FIFO：在并发时为满，在一个时钟周期内，先完成deq操作将旧的数据取出，记为A；再完成enq操作将新的数据读入，记为B，则这个逻辑消耗的时间为t(A)+t(B)。但n个满的Pipeline FIFO级联时，若进行数据依次传输，由于前一个FIFO的deq操作会被后一个FIFO的deq操作阻塞，因此首先由第n个FIFO执行deq，再由第n-1个FIFO执行deq，如此直到第1个FIFO，这个逻辑执行时间为n*[t(A)+t(B)]
+
+（2）Bypass FIFO：在并发时为空，在一个时钟周期内，先完成enq操作将新的数据读入，记为A；再完成deq操作将旧的数据取出，记为B，则这个逻辑消耗的时间为t(A)+t(B)。但n个空的Bypass FIFO级联时，若进行数据依次传输，由于后一个FIFO的enq操作会被前一个FIFO的enq操作阻塞，因此首先由第1个FIFO执行enq，再由第2个FIFO执行enq，如此直到第n个FIFO，这个逻辑执行时间为n*[t(A)+t(B)]
+
+（3）Conflict Free FIFO：不空不满时并发，在一个时钟周期内同时完成enq和deq的操作，逻辑消耗时间为max(t(A), t(B))，即使有n个可并发的Conflict Free FIFO级联，前后FIFO的enq和deq操作没有依赖关系，因此逻辑消耗时间仍然为max(t(A), t(B))
 
 
 
