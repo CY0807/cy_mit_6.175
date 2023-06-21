@@ -311,38 +311,7 @@ endinterface
 
 ## 1 Pipeline FIFO
 
-长度为1，程序：
-
-````
-module mkMyPipelineFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Reg#(t) data <- mkRegU();
-    Ehr#(2,Bool) empty <- mkEhr(True);
-    Ehr#(2,Bool) full <- mkEhr(False);
-
-    method Bool notEmpty;
-        return !empty[0];
-    endmethod
-
-    method t first if (empty[0]==False);
-        return data;
-    endmethod
-
-    method Action deq if (empty[0]==False);
-        empty[0] <= True;
-        full[0] <= False;
-    endmethod
-
-    method Bool notFull;
-        return !full[1];
-    endmethod
-
-    method Action enq(t x) if (full[1]==False);
-        full[1] <= True;
-        empty[1] <= False;
-        data <= x;
-    endmethod   
-endmodule
-````
+长度为1
 
 编译与功能、调度仿真：
 
@@ -350,110 +319,15 @@ endmodule
 
 ## 2 Bypass FIFO
 
-长度为1，程序：
-
-````
-module mkMyBypassFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Reg#(t) data <- mkRegU();
-    Ehr#(2,Bool) empty <- mkEhr(True);
-    Ehr#(2,Bool) full <- mkEhr(False);
-
-    method Bool notFull;
-        return !full[0];
-    endmethod
-
-    method Action enq(t x) if (full[0]==False);
-        full[0] <= True;
-        empty[0] <= False;
-        data <= x;
-    endmethod
-
-    method Bool notEmpty;
-        return !empty[1];
-    endmethod
-
-    method Action deq if (empty[1]==False);
-        empty[1] <= True;
-        full[1] <= False;
-    endmethod
-
-    method t first if (empty[1]==False);
-        return data;
-    endmethod
-endmodule
-````
+长度为1
 
 编译与功能、调度仿真：
 
-<img src="./image/image-20230610235933698.png" alt="image-20230610235933698" style="zoom:33%;" />
+<img src="./image/image-20230618111230114.png" alt="image-20230618111230114" style="zoom:33%;" />
 
 ## 3 Conflict Free FIFO
 
-长度为2，程序：
-
-````
-module mkMyCFFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Vector#(2, Reg#(t)) data <- replicateM(mkRegU());
-    Reg#(Bool) empty <- mkReg(True);
-    Reg#(Bool) full <- mkReg(False);
-    Reg#(Bit#(2)) cnt <- mkReg(0);
-    Ehr#(2, Maybe#(t)) enqReq <- mkEhr(tagged Invalid);
-    Ehr#(2, Bool) deqReq <- mkEhr(False);
-    
-    rule canonicalize;
-        deqReq[1] <= False;
-        enqReq[1] <= tagged Invalid;
-
-        case (tuple2(enqReq[1], deqReq[1])) matches
-            {tagged Valid .dat, True}: begin
-                data[1] <= dat;
-            end
-            {tagged Valid .dat, False}: begin
-                cnt <= cnt + 1;
-                if(cnt == 0) begin
-                    data[1] <= dat;
-                    empty <= False;
-                end
-                else begin
-                    data[0] <= dat;
-                    full <= True;
-                end
-            end
-            {tagged Invalid, True}: begin
-                cnt <= cnt - 1;
-                if(cnt == 2) begin
-                    data[1] <= data[0];
-                    full <= False;
-                end
-                else begin
-                    empty <= True;
-                end
-            end
-            default: begin end
-        endcase  
-    endrule
-
-    method Bool notFull;
-        return !full;
-    endmethod
-
-    method Bool notEmpty;
-        return !empty;
-    endmethod
-
-    method t first if (empty==False);
-        return data[1]; 
-    endmethod
-
-    method Action enq(t x) if (full==False);
-        enqReq[0] <= tagged Valid x; 
-    endmethod
-
-    method Action deq if (empty==False);
-        deqReq[0] <= True;
-    endmethod
-endmodule
-````
+长度为2
 
 编译与功能、调度仿真：
 
@@ -485,7 +359,134 @@ endmodule
 
 
 
+# Lab5
+
+Exercise 0:
+
+```
+make build.bluesim VPROC=ONECYCLE 
+```
+
+<img src="./image/image-20230615141345664.png" alt="image-20230615141345664" style="zoom:33%;" />
+
+```
+./run_asm.sh
+```
+
+<img src="./image/image-20230615214859913.png" alt="image-20230615214859913" style="zoom:33%;" />
+
+exercise 1:
+
+```
+./run_bmarks.sh
+```
+
+<img src="./image/image-20230616190525181.png" alt="image-20230616190525181" style="zoom:33%;" />
+
+TWO_STAGE BenchMark:
+
+<img src="./image/image-20230617162150065.png" alt="image-20230617162150065" style="zoom: 33%;" />
+
+<img src="./image/image-20230617162208284.png" alt="image-20230617162208284" style="zoom:33%;" />
+
+<img src="./image/image-20230617162225457.png" alt="image-20230617162225457" style="zoom:33%;" />
+
+<img src="./image/image-20230617162246314.png" alt="image-20230617162246314" style="zoom:33%;" />
+
+<img src="./image/image-20230617162303809.png" alt="image-20230617162303809" style="zoom:33%;" />
+
+TWO_STAGE with Branch Target Buffer(BTB) BenchMark
+
+<img src="./image/image-20230617164603431.png" alt="image-20230617164603431" style="zoom:33%;" />
+
+<img src="./image/image-20230617164626654.png" alt="image-20230617164626654" style="zoom:33%;" />
+
+<img src="./image/image-20230617164645712.png" alt="image-20230617164645712" style="zoom:33%;" />
+
+<img src="./image/image-20230617164701279.png" alt="image-20230617164701279" style="zoom:33%;" />
+
+<img src="./image/image-20230617164714818.png" alt="image-20230617164714818" style="zoom:33%;" />
+
+**Harzards:**
+
+**1、structural harzard**：results from reads cannot be used in the same cycle as the reads are performed ( come from delayed mem); 
+
+solve: extra pipeline stage
+
+**2、control harzard**：For branch instructions, the next instruction is not always known ( come from different stage between fetch and execution); 
+
+solve: ***epoch*** 
+
+**3、data harzard**：: register values got in decode stage  may be stale with different stage between decode and execute; 
+
+solve: Bypass Register File; ***Scoreboard*** ( A data structure to keep  track of the instructions in the pipeline  beyond the Fetch stage )
+
+(not in Lab5, in Lab6)
+
+**solve**: stall, bypass, speculate ( if incorrect then kill )
 
 
 
+**branch target buffer** ( BTB )：
 
+predicts the location of the next instruction to fetch based on the current value of the program counter
+
+
+
+**predict accuracy in lab5 two stage：**
+
+1-(cycle-inst)/inst = (2*inst-cycle)/inst = 2-CPI
+
+# Lab 6
+
+## SixStage:
+
+1、six stage bench mark：
+
+<img src="./image/image-20230619200704634.png" alt="image-20230619200704634" style="zoom:33%;" />
+
+<img src="./image/image-20230619200723639.png" alt="image-20230619200723639" style="zoom:33%;" />
+
+<img src="./image/image-20230619200736718.png" alt="image-20230619200736718" style="zoom:33%;" />
+
+<img src="./image/image-20230619200749998.png" alt="image-20230619200749998" style="zoom:33%;" />
+
+<img src="./image/image-20230619200806648.png" alt="image-20230619200806648" style="zoom:33%;" />
+
+（1）mispredict：在execute执行后可得知是否mispredict，若发生mispredict，execute stage之前的n个stage都需要kill，采用epoch寄存器来进行同步，lab6中一次mispredict造成3个dead cycle
+
+（2）data harzard：在reg fetch阶段可以得知，采用soreboard判断（reg fetch写入，write back取出），由于其stall造成的dead cycle取决于reg fetch到write back之间的周期数，在lab6为3个cycle
+
+2、six stage bht bench mark：
+
+<img src="./image/image-20230619201432320.png" alt="image-20230619201432320" style="zoom:33%;" />
+
+<img src="./image/image-20230619201454408.png" alt="image-20230619201454408" style="zoom:33%;" />
+
+<img src="./image/image-20230619201505056.png" alt="image-20230619201505056" style="zoom:33%;" />
+
+<img src="./image/image-20230619201517408.png" alt="image-20230619201517408" style="zoom:33%;" />
+
+<img src="./image/image-20230619201531699.png" alt="image-20230619201531699" style="zoom:33%;" />
+
+**Branch History Table** ( BHT ) : 
+
+在decode阶段，若发现Br或J指令，则采用BHT进行一次predict，并添加了一个epoch寄存器用于同步。
+
+
+
+3、six stage bonus bench mark：
+
+<img src="./image/image-20230619203224318.png" alt="image-20230619203224318" style="zoom:33%;" />
+
+<img src="./image/image-20230619203236738.png" alt="image-20230619203236738" style="zoom:33%;" />
+
+<img src="./image/image-20230619203248676.png" alt="image-20230619203248676" style="zoom:33%;" />
+
+<img src="./image/image-20230619203300588.png" alt="image-20230619203300588" style="zoom:33%;" />
+
+<img src="./image/image-20230619203311493.png" alt="image-20230619203311493" style="zoom:33%;" />
+
+（1）在 reg fetch 阶段可以对 JALR 指令进行 pc redirect
+
+（2）在decode阶段采用 return address stack (RAS) ，在  JALR 跳转到函数体时将 pc 压栈，在跳回时 出栈 并进行 pc redirect

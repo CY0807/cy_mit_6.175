@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Fri Jun 16 11:06:26 2023
+# Process ID: 11824
+# Current directory: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.runs/synth_1
+# Command line: vivado.exe -log handshake_pipe_ready_patting.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source handshake_pipe_ready_patting.tcl
+# Log file: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.runs/synth_1/handshake_pipe_ready_patting.vds
+# Journal file: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source handshake_pipe_ready_patting.tcl -notrace

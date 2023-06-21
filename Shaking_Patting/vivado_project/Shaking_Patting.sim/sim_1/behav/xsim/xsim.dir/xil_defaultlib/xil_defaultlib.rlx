@@ -1,0 +1,13 @@
+0.6
+2019.1
+May 24 2019
+15:06:07
+C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v,1687010074,verilog,,C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v,,handshake_pipe_ready_patting,,,,,,,,
+C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v,1686849245,verilog,,C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v,,handshake_pipe_valid_patting,,,,,,,,
+C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v,1686888445,verilog,,,,testbench,,,,,,,,
+C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim/glbl.v,1558713910,verilog,,,,glbl,,,,,,,,
+D:/github_repo/Shaking_Patting/source_code/SimTop.v,1686848988,verilog,,D:/github_repo/Shaking_Patting/source_code/handshake_pipe_valid_patting.v,,SimTop,,,,,,,,
+D:/github_repo/Shaking_Patting/source_code/handshake_pipe_both_patting.v,1686664333,verilog,,D:/github_repo/Shaking_Patting/source_code/master_interface.v,,handshake_pipe_both_patting,,,,,,,,
+D:/github_repo/Shaking_Patting/source_code/handshake_pipe_no_patting.v,1686624880,verilog,,D:/github_repo/Shaking_Patting/source_code/master_interface.v,,handshake_pipe,,,,,,,,
+D:/github_repo/Shaking_Patting/source_code/master_interface.v,1686649499,verilog,,D:/github_repo/Shaking_Patting/source_code/slave_interface.v,,master_interface,,,,,,,,
+D:/github_repo/Shaking_Patting/source_code/slave_interface.v,1686643635,verilog,,D:/github_repo/Shaking_Patting/source_code/testbench.v,,slave_interface,,,,,,,,

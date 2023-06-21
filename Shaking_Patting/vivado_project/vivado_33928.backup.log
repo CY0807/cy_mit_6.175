@@ -1,0 +1,111 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Tue Jun 13 22:31:03 2023
+# Process ID: 33928
+# Current directory: D:/github_repo/Shaking_Patting/vivado_project
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent34312 D:\github_repo\Shaking_Patting\vivado_project\Shaking_Patting.xpr
+# Log file: D:/github_repo/Shaking_Patting/vivado_project/vivado.log
+# Journal file: D:/github_repo/Shaking_Patting/vivado_project\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.xpr
+INFO: [Project 1-313] Project file moved from 'D:/github_repo/Shaking_Patting/Shaking_Patting' since last save.
+CRITICAL WARNING: [Project 1-19] Could not find the file 'D:/github_repo/Shaking_Patting/source_code/SimTop_no_patting.v'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/data/ip'.
+update_compile_order -fileset sources_1
+export_ip_user_files -of_objects  [get_files D:/github_repo/Shaking_Patting/source_code/SimTop_no_patting.v] -no_script -reset -force -quiet
+remove_files  D:/github_repo/Shaking_Patting/source_code/SimTop_no_patting.v
+update_compile_order -fileset sources_1
+add_files -norecurse D:/github_repo/Shaking_Patting/source_code/SimTop.v
+update_compile_order -fileset sources_1
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/source_code/SimTop.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SimTop
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/source_code/master_interface.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module master_interface
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/source_code/slave_interface.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module slave_interface
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [D:/github_repo/Shaking_Patting/source_code/testbench.v:90]
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [D:/github_repo/Shaking_Patting/source_code/testbench.v:113]
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [D:/github_repo/Shaking_Patting/source_code/testbench.v:124]
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "D:/github_repo/Shaking_Patting/source_code/SimTop.v" Line 2. Module SimTop doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/github_repo/Shaking_Patting/source_code/master_interface.v" Line 1. Module master_interface doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/github_repo/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/github_repo/Shaking_Patting/source_code/slave_interface.v" Line 1. Module slave_interface doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.master_interface
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.slave_interface
+Compiling module xil_defaultlib.SimTop
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'D:/github_repo/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:02 ; elapsed = 00:00:05 . Memory (MB): peak = 942.156 ; gain = 59.461
+run all
+master data:
+2223298057 2302104082 2301810194   91457290 1433945514 3936758485 1975848427  353361194 3206754942 2831678545  921010541 3924555475 3340373134 3790668483 1534048694 3064211053 1528245686  239158556 2386006044 3092628592 1062902654 2965171809 1131909510  355448106 1527504310 1552061881  423960882 4064912612 4152529135 3781800130  
+slave data:
+2223298057 2302104082 2301810194   91457290 1433945514 3936758485 1975848427  353361194 3206754942 2831678545  921010541 3924555475 3340373134 3790668483 1534048694 3064211053 1528245686  239158556 2386006044 3092628592 1062902654 2965171809 1131909510  355448106 1527504310 1552061881  423960882 4064912612 4152529135 3781800130  
+PASS
+
+$finish called at time : 1215 ns : File "D:/github_repo/Shaking_Patting/source_code/testbench.v" Line 131
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Tue Jun 13 22:32:04 2023...

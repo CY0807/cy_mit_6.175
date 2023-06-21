@@ -7,129 +7,162 @@ interface Fifo#(type t);
     method Bool notEmpty;
     method Action deq;
     method t first;
+    method Action clear;
 endinterface
 
 // Pipeline FIFO
+// Combinational paths from inputs to outputs:
+//   EN_deq -> notFull
+//   EN_deq -> notFull -> RDY_enq -> EN_deq(previous fifo)
 module mkMyPipelineFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Reg#(t) data <- mkRegU();
-    Ehr#(2,Bool) empty <- mkEhr(True);
-    Ehr#(2,Bool) full <- mkEhr(False);
+    Ehr#(2, t) data_ehr <- mkEhr(?); // 可以只用reg：Reg#(t) data_reg <- mkRegU();
+    Ehr#(3, Bool) valid_ehr <- mkEhr(False);
 
     method Bool notEmpty;
-        return !empty[0];
+        return valid_ehr[0];
     endmethod
 
-    method t first if (empty[0]==False);
-        return data;
+    method t first if (valid_ehr[0]);
+        return data_ehr[0]; // data_reg;
     endmethod
 
-    method Action deq if (empty[0]==False);
-        empty[0] <= True;
-        full[0] <= False;
+    method Action deq if (valid_ehr[0]);
+        valid_ehr[0] <= False;
     endmethod
 
     method Bool notFull;
-        return !full[1];
+        return !valid_ehr[1];
     endmethod
 
-    method Action enq(t x) if (full[1]==False);
-        full[1] <= True;
-        empty[1] <= False;
-        data <= x;
-    endmethod   
+    method Action enq(t x) if (!valid_ehr[1]);
+        valid_ehr[1] <= True;
+        data_ehr[1] <= x; // data_reg <= x;
+    endmethod 
+
+    method Action clear;
+        valid_ehr[2] <= False;
+    endmethod
 endmodule
 
 // Bypass FIFO
+// Combinational paths from inputs to outputs:
+//   EN_enq -> notEmpty
+//   EN_enq -> notEmpty -> RDY_deq -> EN_enq(next fifo)
+//   EN_enq -> RDY_first
 module mkMyBypassFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Reg#(t) data <- mkRegU();
-    Ehr#(2,Bool) empty <- mkEhr(True);
-    Ehr#(2,Bool) full <- mkEhr(False);
+    Ehr#(2, t) data_ehr <- mkEhr(?);
+    Ehr#(3, Bool) valid_ehr <- mkEhr(False);
 
     method Bool notFull;
-        return !full[0];
+        return !valid_ehr[0];
     endmethod
 
-    method Action enq(t x) if (full[0]==False);
-        full[0] <= True;
-        empty[0] <= False;
-        data <= x;
+    method Action enq(t x) if (!valid_ehr[0]);
+        valid_ehr[0] <= True;
+        data_ehr[0] <= x;
     endmethod
 
     method Bool notEmpty;
-        return !empty[1];
+        return valid_ehr[1];
     endmethod
 
-    method Action deq if (empty[1]==False);
-        empty[1] <= True;
-        full[1] <= False;
+    method Action deq if (valid_ehr[1]);
+        valid_ehr[1] <= False;
     endmethod
 
-    method t first if (empty[1]==False);
-        return data;
+    method t first if (valid_ehr[1]);
+        return data_ehr[1];
+    endmethod
+
+    method Action clear;
+        valid_ehr[2] <= False;
     endmethod
 endmodule
 
 
 // Confilc Free FIFO
+// No combinational paths from inputs to outputs
 module mkMyCFFifo(Fifo#(t)) provisos (Bits#(t,tSz));
-    Vector#(2, Reg#(t)) data <- replicateM(mkRegU());
-    Reg#(Bool) empty <- mkReg(True);
-    Reg#(Bool) full <- mkReg(False);
-    Reg#(Bit#(2)) cnt <- mkReg(0);
-    Ehr#(2, Maybe#(t)) enqReq <- mkEhr(tagged Invalid);
-    Ehr#(2, Bool) deqReq <- mkEhr(False);
+    Vector#(2, Reg#(t)) data_reg <- replicateM(mkRegU());
+    Reg#(Bool) empty_reg <- mkReg(True);
+    Reg#(Bool) full_reg <- mkReg(False);
+    Ehr#(2, Maybe#(t)) enqReq_ehr <- mkEhr(tagged Invalid);
+    Ehr#(2, Bool) deqReq_ehr <- mkEhr(False);
+    Ehr#(2, Bool) clearReq_ehr <- mkEhr(False);
     
     rule canonicalize;
-        deqReq[1] <= False;
-        enqReq[1] <= tagged Invalid;
+        deqReq_ehr[1] <= False;
+        enqReq_ehr[1] <= tagged Invalid;
 
-        case (tuple2(enqReq[1], deqReq[1])) matches
-            {tagged Valid .dat, True}: begin
-                data[1] <= dat;
+        case (tuple3(enqReq_ehr[1], deqReq_ehr[1], clearReq_ehr[1])) matches
+            {tagged Valid .dat, True, False}: begin
+                data_reg[1] <= dat;
             end
-            {tagged Valid .dat, False}: begin
-                cnt <= cnt + 1;
-                if(cnt == 0) begin
-                    data[1] <= dat;
-                    empty <= False;
+            {tagged Valid .dat, False, False}: begin
+                if(empty_reg) begin
+                    data_reg[1] <= dat;
+                    empty_reg <= False;
                 end
                 else begin
-                    data[0] <= dat;
-                    full <= True;
+                    data_reg[0] <= dat;
+                    full_reg <= True;
                 end
             end
-            {tagged Invalid, True}: begin
-                cnt <= cnt - 1;
-                if(cnt == 2) begin
-                    data[1] <= data[0];
-                    full <= False;
+            {tagged Invalid, True, False}: begin
+                if(full_reg) begin
+                    data_reg[1] <= data_reg[0];
+                    full_reg <= False;
                 end
                 else begin
-                    empty <= True;
+                    empty_reg <= True;
                 end
+            end
+            {.*, .*, True}: begin
+                empty_reg <= True;
+                full_reg <= False;
             end
             default: begin end
         endcase  
     endrule
 
     method Bool notFull;
-        return !full;
+        return !full_reg;
     endmethod
 
     method Bool notEmpty;
-        return !empty;
+        return !empty_reg;
     endmethod
 
-    method t first if (empty==False);
-        return data[1]; 
+    method t first if (!empty_reg);
+        return data_reg[1]; 
     endmethod
 
-    method Action enq(t x) if (full==False);
-        enqReq[0] <= tagged Valid x; 
+    method Action enq(t x) if (!full_reg);
+        enqReq_ehr[0] <= tagged Valid x; 
     endmethod
 
-    method Action deq if (empty==False);
-        deqReq[0] <= True;
+    method Action deq if (!empty_reg);
+        deqReq_ehr[0] <= True;
     endmethod
 
+    method Action clear;
+        clearReq_ehr[0] <= True;
+    endmethod
+endmodule
+
+// modules without provisos for generating verilog
+
+module mkBypassFifo(Fifo#(int));
+    Fifo#(int) bypassFifo <- mkMyBypassFifo;
+    return bypassFifo;
+endmodule
+
+module mkPipelineFifo(Fifo#(int));
+    Fifo#(int) pipelineFifo <- mkMyPipelineFifo;
+    return pipelineFifo;
+endmodule
+
+module mkCFFifo(Fifo#(int));
+    Fifo#(int) cfFifo <- mkMyCFFifo;
+    return cfFifo;
 endmodule
