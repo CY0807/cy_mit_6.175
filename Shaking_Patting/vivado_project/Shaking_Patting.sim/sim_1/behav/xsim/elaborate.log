@@ -5,10 +5,14 @@ Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
 Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" Line 1. Module handshake_pipe_both_patting doesn't have a timescale but at least one module in design has a timescale.
 WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" Line 1. Module handshake_pipe_valid_patting doesn't have a timescale but at least one module in design has a timescale.
 Completed simulation data flow analysis
 Time Resolution for simulation is 1ps
 Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.handshake_pipe_valid_patting
+Compiling module xil_defaultlib.handshake_pipe_both_patting
 Compiling module xil_defaultlib.testbench
 Compiling module xil_defaultlib.glbl
 Built simulation snapshot testbench_behav

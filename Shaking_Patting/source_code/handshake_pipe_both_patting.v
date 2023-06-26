@@ -10,45 +10,36 @@ module handshake_pipe_both_patting (
     output wire [31:0] slave_data,
     input  wire slave_ready
     );
+	
+// input -> ready_pipe -> valid_pipe -> output
+	
+wire [31:0] data_trans;
+wire valid_trans, ready_trans;	
 
-    reg [31:0] data0_reg, data1_reg;
-	reg [1:0] valid_reg;
-
-	wire shake_master = master_valid & master_ready;
-	wire shake_slave = slave_valid & slave_ready;
-
-	assign master_ready = ~valid_reg[0];
-	assign slave_valid = valid_reg[1];
-	assign slave_data = data1_reg;
-
-    always@(posedge clk or negedge rst_n) begin
-	    if(!rst_n) begin
-		    valid_reg <= 2'b00;
-			data0_reg <= 0;
-			data1_reg <= 0;
-		end
-		else if(shake_master & shake_slave) begin
-			data1_reg <= master_data;
-		end
-	    else if(shake_master) begin
-			if(valid_reg == 2'b00) begin
-			    data1_reg <= master_data;
-				valid_reg = 2'b10;
-			end
-			else if(valid_reg == 2'b10) begin
-			    data0_reg <= master_data;
-				valid_reg = 2'b11;
-			end
-		end
-		else if(shake_slave) begin
-			if(valid_reg == 2'b11) begin
-			    data1_reg <= data0_reg;
-				valid_reg = 2'b10;
-			end
-			else if(valid_reg == 2'b10) begin
-				valid_reg = 2'b00;
-			end
-		end
-	end
+handshake_pipe_ready_patting handshake_pipe_inst1 (	
+    .clk(clk),
+	.rst_n(rst_n),
+	
+    .master_valid(master_valid),
+    .master_data (master_data),
+    .master_ready(master_ready),
+    
+    .slave_valid(valid_trans),
+    .slave_data (data_trans),
+    .slave_ready(ready_trans)
+);
+	
+handshake_pipe_valid_patting handshake_pipe_inst2 (	
+    .clk(clk),
+	.rst_n(rst_n),
+	
+    .master_valid(valid_trans),
+    .master_data (data_trans),
+    .master_ready(ready_trans),
+    
+    .slave_valid(slave_valid),
+    .slave_data (slave_data),
+    .slave_ready(slave_ready)
+);	
     
 endmodule

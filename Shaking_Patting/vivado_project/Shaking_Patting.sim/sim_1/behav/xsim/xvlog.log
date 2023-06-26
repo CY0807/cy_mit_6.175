@@ -1,7 +1,9 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_both_patting
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_valid_patting
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module testbench
-WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:79]
-WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:102]
-WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:113]
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:116]

@@ -16,6 +16,12 @@ import SixStageBHT::*;
 `ifdef SIXSTAGEBONUS
 import SixStageBonus::*;
 `endif
+`ifdef SIXSTAGEBHT_CFRULETEST
+import SixStageBHT_CfRuleTest::*;
+`endif
+`ifdef SIXSTAGEBHT_PIPELINERULETEST
+import SixStageBHT_PipelineRuleTest::*;
+`endif
 
 import Ifc::*;
 import ProcTypes::*;

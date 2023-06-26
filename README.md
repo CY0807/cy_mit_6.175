@@ -385,27 +385,11 @@ exercise 1:
 
 TWO_STAGE BenchMark:
 
-<img src="./image/image-20230617162150065.png" alt="image-20230617162150065" style="zoom: 33%;" />
-
-<img src="./image/image-20230617162208284.png" alt="image-20230617162208284" style="zoom:33%;" />
-
-<img src="./image/image-20230617162225457.png" alt="image-20230617162225457" style="zoom:33%;" />
-
-<img src="./image/image-20230617162246314.png" alt="image-20230617162246314" style="zoom:33%;" />
-
-<img src="./image/image-20230617162303809.png" alt="image-20230617162303809" style="zoom:33%;" />
+<img src="./image/image-20230617162150065.png" alt="image-20230617162150065" style="zoom: 33%;" /><img src="./image/image-20230617162208284.png" alt="image-20230617162208284" style="zoom:33%;" /><img src="./image/image-20230617162225457.png" alt="image-20230617162225457" style="zoom:33%;" /><img src="./image/image-20230617162246314.png" alt="image-20230617162246314" style="zoom:33%;" /><img src="./image/image-20230617162303809.png" alt="image-20230617162303809" style="zoom:33%;" />
 
 TWO_STAGE with Branch Target Buffer(BTB) BenchMark
 
-<img src="./image/image-20230617164603431.png" alt="image-20230617164603431" style="zoom:33%;" />
-
-<img src="./image/image-20230617164626654.png" alt="image-20230617164626654" style="zoom:33%;" />
-
-<img src="./image/image-20230617164645712.png" alt="image-20230617164645712" style="zoom:33%;" />
-
-<img src="./image/image-20230617164701279.png" alt="image-20230617164701279" style="zoom:33%;" />
-
-<img src="./image/image-20230617164714818.png" alt="image-20230617164714818" style="zoom:33%;" />
+<img src="./image/image-20230617164603431.png" alt="image-20230617164603431" style="zoom:33%;" /><img src="./image/image-20230617164626654.png" alt="image-20230617164626654" style="zoom:33%;" /><img src="./image/image-20230617164645712.png" alt="image-20230617164645712" style="zoom:33%;" /><img src="./image/image-20230617164701279.png" alt="image-20230617164701279" style="zoom:33%;" /><img src="./image/image-20230617164714818.png" alt="image-20230617164714818" style="zoom:33%;" />
 
 **Harzards:**
 
@@ -441,52 +425,116 @@ predicts the location of the next instruction to fetch based on the current valu
 
 ## SixStage:
 
-1、six stage bench mark：
+**1、six stage bench mark：**
 
-<img src="./image/image-20230619200704634.png" alt="image-20230619200704634" style="zoom:33%;" />
-
-<img src="./image/image-20230619200723639.png" alt="image-20230619200723639" style="zoom:33%;" />
-
-<img src="./image/image-20230619200736718.png" alt="image-20230619200736718" style="zoom:33%;" />
-
-<img src="./image/image-20230619200749998.png" alt="image-20230619200749998" style="zoom:33%;" />
-
-<img src="./image/image-20230619200806648.png" alt="image-20230619200806648" style="zoom:33%;" />
+<img src="./image/image-20230619200704634.png" alt="image-20230619200704634" style="zoom:33%;" /><img src="./image/image-20230619200723639.png" alt="image-20230619200723639" style="zoom:33%;" /><img src="./image/image-20230619200736718.png" alt="image-20230619200736718" style="zoom:33%;" /><img src="./image/image-20230619200749998.png" alt="image-20230619200749998" style="zoom:33%;" /><img src="./image/image-20230619200806648.png" alt="image-20230619200806648" style="zoom:33%;" />
 
 （1）mispredict：在execute执行后可得知是否mispredict，若发生mispredict，execute stage之前的n个stage都需要kill，采用epoch寄存器来进行同步，lab6中一次mispredict造成3个dead cycle
 
 （2）data harzard：在reg fetch阶段可以得知，采用soreboard判断（reg fetch写入，write back取出），由于其stall造成的dead cycle取决于reg fetch到write back之间的周期数，在lab6为3个cycle
 
-2、six stage bht bench mark：
+**2、six stage bht bench mark：**
 
-<img src="./image/image-20230619201432320.png" alt="image-20230619201432320" style="zoom:33%;" />
-
-<img src="./image/image-20230619201454408.png" alt="image-20230619201454408" style="zoom:33%;" />
-
-<img src="./image/image-20230619201505056.png" alt="image-20230619201505056" style="zoom:33%;" />
-
-<img src="./image/image-20230619201517408.png" alt="image-20230619201517408" style="zoom:33%;" />
-
-<img src="./image/image-20230619201531699.png" alt="image-20230619201531699" style="zoom:33%;" />
+<img src="./image/image-20230619201432320.png" alt="image-20230619201432320" style="zoom:33%;" /><img src="./image/image-20230619201454408.png" alt="image-20230619201454408" style="zoom:33%;" /><img src="./image/image-20230619201505056.png" alt="image-20230619201505056" style="zoom:33%;" /><img src="./image/image-20230619201517408.png" alt="image-20230619201517408" style="zoom:33%;" /><img src="./image/image-20230619201531699.png" alt="image-20230619201531699" style="zoom:33%;" />
 
 **Branch History Table** ( BHT ) : 
 
 在decode阶段，若发现Br或J指令，则采用BHT进行一次predict，并添加了一个epoch寄存器用于同步。
 
+**3、在都是用CF fifo时rule的调度顺序：**
+
+<img src="./image/image-20230624101600325.png" alt="image-20230624101600325" style="zoom:33%;" />
+
+**前10个时钟周期rule的调度顺序：**
+
+<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom:33%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom:33%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom:33%;" />
+
+**影响调度顺序的因素：**
+
+（1）register file：rd<wr  导致  doRegFetch<doWriteBack
+
+（2）bht：ppcDP<update 导致 deDecode<doExecute
+
+（3）btb：predPc<update 导致 doFetch<cononicalizeRedirect
+
+（4）decEpoch：rd<wr 导致 {doFetch, doDecode}<cononicalizeRedirect
+
+（5）exeEpoch: rd<wr 导致  {doFetch, doDecode, doRegFetch, doExecute}<cononicalizeRedirect
+
+（6）pcReg[0].rd < pcReg[0].wr < pcReg[1].wr  导致 doFetch<cononicalizeRedirect
+
+（7）exeRedirect[0].wr < exeRedirect[1].wr 导致 doExecute<cononicalizeRedirect
+
+（8）decRedirect[0].wr < decRedirect[1].wr 导致 doDecode<cononicalizeRedirect
+
+（9）cycle: rd<wr 导致 cycleCounter > 其他rule
+
+（10）csrf: rd<wr 导致 doRegFetch<doWriteBack
 
 
-3、six stage bonus bench mark：
 
-<img src="./image/image-20230619203224318.png" alt="image-20230619203224318" style="zoom:33%;" />
+**4、在都改用Pipeline FIFO后rule的调度顺序：**
 
-<img src="./image/image-20230619203236738.png" alt="image-20230619203236738" style="zoom:33%;" />
+<img src="./image/image-20230624101636846.png" alt="image-20230624101636846" style="zoom:33%;" />
 
-<img src="./image/image-20230619203248676.png" alt="image-20230619203248676" style="zoom:33%;" />
+benchmark：
 
-<img src="./image/image-20230619203300588.png" alt="image-20230619203300588" style="zoom:33%;" />
+<img src="./image/image-20230624104505097.png" alt="image-20230624104505097" style="zoom:33%;" /><img src="./image/image-20230624104527390.png" alt="image-20230624104527390" style="zoom:33%;" /><img src="./image/image-20230624104604059.png" alt="image-20230624104604059" style="zoom:33%;" /><img src="./image/image-20230624104625872.png" alt="image-20230624104625872" style="zoom:33%;" /><img src="./image/image-20230624104641994.png" alt="image-20230624104641994" style="zoom:33%;" />
 
-<img src="./image/image-20230619203311493.png" alt="image-20230619203311493" style="zoom:33%;" />
+前20个时钟周期rule的调度顺序：
+
+<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom:33%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom:33%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom:33%;" />
+
+**影响调度顺序的因素：**
+
+除了在如上CF fifo中的因素以外，还有：
+
+由于pipeline fifo中 {notEmpty, first, deq} < {notFull, enq} ，导致：
+
+doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononicalizeRedirect < cycleCounter
+
+产生conflict，使得bsv调度器无法在一个时钟周期内完成所有rule的调度
+
+
+
+## six stage bonus
+
+<img src="./image/image-20230619203224318.png" alt="image-20230619203224318" style="zoom:33%;" /><img src="./image/image-20230619203236738.png" alt="image-20230619203236738" style="zoom:33%;" /><img src="./image/image-20230619203248676.png" alt="image-20230619203248676" style="zoom:33%;" /><img src="./image/image-20230619203300588.png" alt="image-20230619203300588" style="zoom:33%;" /><img src="./image/image-20230619203311493.png" alt="image-20230619203311493" style="zoom:33%;" />
 
 （1）在 reg fetch 阶段可以对 JALR 指令进行 pc redirect
 
 （2）在decode阶段采用 return address stack (RAS) ，在  JALR 跳转到函数体时将 pc 压栈，在跳回时 出栈 并进行 pc redirect
+
+# Lab7
+
+## 1 Without Cache
+
+benchmark:
+
+<img src="./image/image-20230622202940683.png" alt="image-20230622202940683" style="zoom:33%;" /><img src="./image/image-20230622203006284.png" alt="image-20230622203006284" style="zoom:33%;" /><img src="./image/image-20230622203022602.png" alt="image-20230622203022602" style="zoom:33%;" /><img src="./image/image-20230622203034375.png" alt="image-20230622203034375" style="zoom:33%;" /><img src="./image/image-20230622203049121.png" alt="image-20230622203049121" style="zoom:33%;" />
+
+## 2 With Cache
+
+benchmark:
+
+<img src="./image/image-20230624092651635.png" alt="image-20230624092651635" style="zoom:33%;" /><img src="./image/image-20230624092707916.png" alt="image-20230624092707916" style="zoom:33%;" /><img src="./image/image-20230624092938963.png" alt="image-20230624092938963" style="zoom:33%;" /><img src="./image/image-20230624093000693.png" alt="image-20230624093000693" style="zoom:33%;" /><img src="./image/image-20230624093029219.png" alt="image-20230624093029219" style="zoom:33%;" />
+
+cahe结构和工作原理：
+
+<img src="./image/image-20230626120135337.png" alt="image-20230626120135337" style="zoom:33%;" />
+
+
+
+# Lab8
+
+1、normal bench mark
+
+<img src="./image/image-20230626122822665.png" alt="image-20230626122822665" style="zoom:33%;" /><img src="./image/image-20230626122835635.png" alt="image-20230626122835635" style="zoom:33%;" /><img src="./image/image-20230626122854680.png" alt="image-20230626122854680" style="zoom:33%;" /><img src="./image/image-20230626122910839.png" alt="image-20230626122910839" style="zoom:33%;" /><img src="./image/image-20230626122922747.png" alt="image-20230626122922747" style="zoom:33%;" />
+
+2、exception test
+
+<img src="./image/image-20230626123435479.png" alt="image-20230626123435479" style="zoom:33%;" /><img src="./image/image-20230626123459463.png" alt="image-20230626123459463" style="zoom:33%;" /><img src="./image/image-20230626123550999.png" alt="image-20230626123550999" style="zoom:33%;" /><img src="./image/image-20230626123604849.png" alt="image-20230626123604849" style="zoom:33%;" /><img src="./image/image-20230626123615084.png" alt="image-20230626123615084" style="zoom:33%;" /><img src="./image/image-20230626123626264.png" alt="image-20230626123626264" style="zoom:33%;" />
+
+3、permission test
+
+<img src="./image/image-20230626123716606.png" alt="image-20230626123716606" style="zoom:33%;" />

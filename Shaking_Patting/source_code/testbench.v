@@ -2,8 +2,7 @@
 
 module testbench();
 
-
-integer cnt_max = 30; // 测试中传输数据个数
+reg [31:0] cnt_max = 30000; // 测试中传输数据个数
 
 reg clk, rst_n; 
 parameter period = 10;
@@ -31,16 +30,28 @@ always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
 	    master_valid <= 1'b0;
 	end
-	else if(!master_valid | master_ready) begin
+	else if(!master_valid || master_ready) begin
 	    master_valid <= $random(seed);
 	end
 end 
+
+// corner case for valid
+/*
+always@(posedge clk or negedge rst_n) begin
+    if(!rst_n) begin
+	    master_valid <= 1'b0;
+	end
+	else if(!master_valid || master_ready) begin
+	    master_valid <= !master_valid;
+	end
+end 
+*/
 
 always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
 	    master_data <= $random(seed);
 	end
-	else if(master_valid & master_ready) begin
+	else if(master_valid && master_ready) begin 
 	    master_data <= $random(seed);
 	end
 end 
@@ -49,67 +60,59 @@ always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
 	    slave_ready <= 1'b0;
 	end
-	else if(!slave_ready | slave_valid) begin
+	else begin
 	    slave_ready <= $random(seed);
 	end
 end 
 
-
-// 自动化验证
-reg [31:0] data_master[0:99];	
-reg [31:0] data_slave[0:99];
-integer cnt_master = 0;
-integer cnt_slave = 0;
-
-// master数据
-reg master_showed;
+// corner case for ready
+/*
 always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
-	    cnt_master = 0;
-		master_showed = 0;
+	    slave_ready <= 1'b0;
+	end
+	else begin
+	    slave_ready <= !slave_ready;
+	end
+end 
+*/
+
+
+// 自动化验证
+reg [31:0] data_master[0:99999];	
+reg [31:0] data_slave[0:99999];
+reg [31:0] cnt_master = 0;
+reg [31:0] cnt_slave = 0;
+
+// master数据
+always@(posedge clk or negedge rst_n) begin
+    if(!rst_n) begin
+	    cnt_master <= 0;
 	end
 	else if(cnt_master < cnt_max) begin
-		if(master_valid & master_ready) begin
+		if(master_valid && master_ready) begin
 			data_master[cnt_master] <= master_data;
-			cnt_master = cnt_master + 1;
+			cnt_master <= cnt_master + 1;
 		end
-	end
-	else if(cnt_master == cnt_max && (~master_showed)) begin
-	    $display("master data:");
-		for(integer i=0; i<cnt_max; i=i+1) begin
-			$write("%d ", data_master[i]);
-		end
-		$display(" ");
-		master_showed = 1;
 	end
 end
 
 // slave
-reg slave_showed;
 always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
-	    cnt_slave = 0;
-		slave_showed = 0;
+	    cnt_slave <= 0;
 	end
 	else if(cnt_slave < cnt_max) begin
-		if(slave_valid & slave_ready) begin
+		if(slave_valid && slave_ready) begin
 			data_slave[cnt_slave] <= slave_data;
-			cnt_slave = cnt_slave + 1;
+			cnt_slave <= cnt_slave + 1;
 		end
-	end
-	else if(cnt_slave == cnt_max && (~slave_showed)) begin
-	    $display("slave data:");
-		for(integer i=0; i<cnt_max; i=i+1) begin
-			$write("%d ", data_slave[i]);
-		end
-		$display(" ");
-		slave_showed = 1;
 	end
 end
 
 // check
 always@(posedge clk or negedge rst_n) begin
-	if(cnt_slave == cnt_max && cnt_master == cnt_max && master_showed && slave_showed) begin
+	if(cnt_slave == cnt_max && cnt_master == cnt_max) begin
 		for(integer i=0; i<cnt_max; i=i+1) begin
 		    if(data_master[i] != data_slave[i]) begin
 			    $display("data Error!\n");
@@ -121,30 +124,21 @@ always@(posedge clk or negedge rst_n) begin
 	end
 end
 
-integer timeout = 50;
-
 // timeout
-always@(posedge clk or negedge rst_n) begin
-    if(!rst_n) begin
-	    timeout <= 50;
-	end
-	else begin
-	    if(timeout == 0) begin
-	    	$display("timeout_reg Error!\n");
-	    	$finish;
-	    end
-	    else if(cnt_master >= cnt_max || cnt_slave >= cnt_max) begin
-	    	timeout <= timeout-1;
-	    end
-	end
+initial begin
+    wait(cnt_master >= cnt_max || cnt_slave >= cnt_max);
+    #(50*period);
+	$display("time out error\n");
+	$finish;
 end
+
 
 // 1. valid patting
 // handshake_pipe_valid_patting handshake_pipe_inst (	
 // 2. ready patting
- handshake_pipe_ready_patting handshake_pipe_inst (	
+// handshake_pipe_ready_patting handshake_pipe_inst (	
 // 3. both patting
-// handshake_pipe_both_patting handshake_pipe_inst (
+ handshake_pipe_both_patting handshake_pipe_inst (
     .clk(clk),
 	.rst_n(rst_n),
 	

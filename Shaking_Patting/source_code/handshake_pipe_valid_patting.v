@@ -22,10 +22,10 @@ module handshake_pipe_valid_patting (
         if(!rst_n) begin
             valid_reg <= 1'b0;
         end
-        else if(master_valid & master_ready) begin
+        else if(master_valid && master_ready) begin
             valid_reg <= 1'b1;
         end
-        else if(slave_ready & valid_reg) begin
+        else if(slave_ready && valid_reg) begin
 			valid_reg <= 1'b0;
 		end
     end
@@ -34,7 +34,7 @@ module handshake_pipe_valid_patting (
         if(!rst_n) begin
             data_reg <= 32'd0;
         end
-        else if(master_valid & master_ready)begin
+        else if(master_valid && master_ready) begin
             data_reg <= master_data; 
         end
     end

@@ -1,6 +1,8 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
+"../../../../../source_code/handshake_pipe_both_patting.v" \
 "../../../../../source_code/handshake_pipe_ready_patting.v" \
+"../../../../../source_code/handshake_pipe_valid_patting.v" \
 "../../../../../source_code/testbench.v" \
 
 # compile glbl module
