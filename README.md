@@ -447,7 +447,7 @@ predicts the location of the next instruction to fetch based on the current valu
 
 **前10个时钟周期rule的调度顺序：**
 
-<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom:33%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom:33%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom:33%;" />
+<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom: 50%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom: 50%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom: 50%;" />
 
 **影响调度顺序的因素：**
 
@@ -473,7 +473,7 @@ predicts the location of the next instruction to fetch based on the current valu
 
 
 
-**4、在都改用Pipeline FIFO后rule的调度顺序：**
+**4、在都改用长度为1的Pipeline FIFO后rule的调度顺序：**
 
 <img src="./image/image-20230624101636846.png" alt="image-20230624101636846" style="zoom:33%;" />
 
@@ -483,7 +483,7 @@ benchmark：
 
 前20个时钟周期rule的调度顺序：
 
-<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom:33%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom:33%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom:33%;" />
+<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom: 50%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom: 50%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom: 50%;" />
 
 **影响调度顺序的因素：**
 
@@ -494,6 +494,12 @@ benchmark：
 doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononicalizeRedirect < cycleCounter
 
 产生conflict，使得bsv调度器无法在一个时钟周期内完成所有rule的调度
+
+
+
+**5、改用长度为2的Pipeline FIFO后rule的调度顺序：**
+
+<img src="./image/image-20230627102607856.png" alt="image-20230627102607856" style="zoom:50%;" /><img src="./image/image-20230627102633451.png" alt="image-20230627102633451" style="zoom:50%;" /><img src="./image/image-20230627102653701.png" alt="image-20230627102653701" style="zoom:50%;" />
 
 
 
@@ -509,21 +515,38 @@ doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononical
 
 ## 1 Without Cache
 
-benchmark:
+**benchmark:**
 
 <img src="./image/image-20230622202940683.png" alt="image-20230622202940683" style="zoom:33%;" /><img src="./image/image-20230622203006284.png" alt="image-20230622203006284" style="zoom:33%;" /><img src="./image/image-20230622203022602.png" alt="image-20230622203022602" style="zoom:33%;" /><img src="./image/image-20230622203034375.png" alt="image-20230622203034375" style="zoom:33%;" /><img src="./image/image-20230622203049121.png" alt="image-20230622203049121" style="zoom:33%;" />
 
 ## 2 With Cache
 
-benchmark:
+**benchmark:**
 
 <img src="./image/image-20230624092651635.png" alt="image-20230624092651635" style="zoom:33%;" /><img src="./image/image-20230624092707916.png" alt="image-20230624092707916" style="zoom:33%;" /><img src="./image/image-20230624092938963.png" alt="image-20230624092938963" style="zoom:33%;" /><img src="./image/image-20230624093000693.png" alt="image-20230624093000693" style="zoom:33%;" /><img src="./image/image-20230624093029219.png" alt="image-20230624093029219" style="zoom:33%;" />
 
-cahe结构和工作原理：
+**cahe结构：**
 
 <img src="./image/image-20230626120135337.png" alt="image-20230626120135337" style="zoom:33%;" />
 
+**Cache工作原理：**
 
+根据addr中的index得到cache line
+将addr中的tag和cache line中的tag比对
+If 相同，则Hit：
+	If 指令为Load：
+		根据addr中的offset得到cache line中的数据
+		将该数据发送给处理器
+	Else 指令为store：
+Else 则Miss：
+	If cache line的dirty和valid有效，则：
+		将cache line写回ddr
+	向ddr读取数据地址addr所在的数据块data
+	If 指令为Load：
+		将data存入cache line
+	Else 指令为store：
+		根据addr中的offset修改data
+将修改后的data存入cache line
 
 # Lab8
 
