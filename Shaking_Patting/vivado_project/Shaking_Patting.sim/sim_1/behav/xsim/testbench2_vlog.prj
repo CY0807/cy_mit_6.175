@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../source_code/handshake_pipe_both_patting.v" \
+"../../../../../source_code/handshake_pipe_ready_patting.v" \
+"../../../../../source_code/handshake_pipe_valid_patting.v" \
+"../../../../Shaking_Patting.srcs/sources_1/new/myfifo.v" \
+"../../../../Shaking_Patting.srcs/sim_1/new/testbench2.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

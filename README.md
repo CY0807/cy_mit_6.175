@@ -447,7 +447,7 @@ predicts the location of the next instruction to fetch based on the current valu
 
 **前10个时钟周期rule的调度顺序：**
 
-<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom: 50%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom: 50%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom: 50%;" />
+<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom: 80%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom: 80%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom: 80%;" />
 
 **影响调度顺序的因素：**
 
@@ -461,7 +461,7 @@ predicts the location of the next instruction to fetch based on the current valu
 
 （5）exeEpoch: rd<wr 导致  {doFetch, doDecode, doRegFetch, doExecute}<cononicalizeRedirect
 
-（6）pcReg[0].rd < pcReg[0].wr < pcReg[1].wr  导致 doFetch<cononicalizeRedirect
+（6）pcReg[0].wr < pcReg[1].wr  导致 doFetch<cononicalizeRedirect
 
 （7）exeRedirect[0].wr < exeRedirect[1].wr 导致 doExecute<cononicalizeRedirect
 
@@ -483,7 +483,7 @@ benchmark：
 
 前20个时钟周期rule的调度顺序：
 
-<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom: 50%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom: 50%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom: 50%;" />
+<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom: 80%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom: 80%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom: 80%;" />
 
 **影响调度顺序的因素：**
 
@@ -494,6 +494,12 @@ benchmark：
 doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononicalizeRedirect < cycleCounter
 
 产生conflict，使得bsv调度器无法在一个时钟周期内完成所有rule的调度
+
+**BSV 规则调度两条原则：**
+
+1、在一个时钟周期内，一条规则要么被激活，要么在编译时产生警告。当规则之间冲突时，bsv编译器将随机决定优先级。若规定了，则采用调度属性中规定的优先级；
+
+2、在一个时钟周期内，一条规则最多被执行一次；
 
 
 
@@ -529,7 +535,7 @@ doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononical
 
 <img src="./image/image-20230626120135337.png" alt="image-20230626120135337" style="zoom:33%;" />
 
-**Cache工作原理：**
+**Cache工作逻辑：**
 
 根据addr中的index得到cache line
 将addr中的tag和cache line中的tag比对

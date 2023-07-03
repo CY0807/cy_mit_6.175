@@ -79,8 +79,8 @@ end
 
 
 // 自动化验证
-reg [31:0] data_master[0:99999];	
-reg [31:0] data_slave[0:99999];
+reg [31:0] data_master[0:100000];	
+reg [31:0] data_slave[0:100000];
 reg [31:0] cnt_master = 0;
 reg [31:0] cnt_slave = 0;
 
@@ -110,8 +110,8 @@ always@(posedge clk or negedge rst_n) begin
 	end
 end
 
-// check
-always@(posedge clk or negedge rst_n) begin
+// check : 可用FIFO存储实时比较，面积更小，逻辑少
+always@(posedge clk) begin
 	if(cnt_slave == cnt_max && cnt_master == cnt_max) begin
 		for(integer i=0; i<cnt_max; i=i+1) begin
 		    if(data_master[i] != data_slave[i]) begin

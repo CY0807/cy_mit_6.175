@@ -3,6 +3,6 @@ Time resolution is 1 ps
 
 ***** Start	Simulation *****
 Random Seed =           0
-PASS
+Data Error!
 
-$finish called at time : 749455 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 123
+$finish called at time : 35 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.srcs/sim_1/new/testbench2.v" Line 95

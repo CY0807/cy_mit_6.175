@@ -14,7 +14,7 @@ module handshake_pipe_valid_patting (
     reg valid_reg;
     reg [31:0] data_reg;
 
-    assign master_ready = slave_ready | (~valid_reg);
+    assign master_ready = ~valid_reg | slave_ready;
     assign slave_data = data_reg;
     assign slave_valid = valid_reg;
 

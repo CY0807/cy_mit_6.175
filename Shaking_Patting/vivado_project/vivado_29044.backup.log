@@ -1,0 +1,391 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:49:42 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Fri Jun 23 08:18:26 2023
+# Process ID: 29044
+# Current directory: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent8764 C:\Users\14817\Desktop\WorkStation_Entry\DatenLord\cy_mit_6.175\Shaking_Patting\vivado_project\Shaking_Patting.xpr
+# Log file: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/vivado.log
+# Journal file: C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.xpr
+INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
+Current project path is 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project'
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/data/ip'.
+update_compile_order -fileset sources_1
+reset_run synth_1
+WARNING: [Vivado 12-1017] Problems encountered:
+1. Failed to delete one or more files in run directory C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.runs/synth_1
+
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:92]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_master" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_slave" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:02 ; elapsed = 00:00:05 . Memory (MB): peak = 1249.297 ; gain = 0.000
+run all
+PASS
+
+$finish called at time : 799695 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 99
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:116]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_master" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_slave" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+run all
+time out error
+
+$finish called at time : 687815 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 132
+run all
+data Error!
+
+$finish called at time : 799655 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 119
+run all
+data Error!
+
+$finish called at time : 799655 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 119
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:116]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_master" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_slave" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+run all
+PASS
+
+$finish called at time : 799695 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 123
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_both_patting
+ERROR: [VRFC 10-2934] 'handshake_pipe_inst' is already declared [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v:32]
+ERROR: [VRFC 10-2865] module 'handshake_pipe_both_patting' ignored due to previous errors [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v:1]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-99] Step results log file:'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim/xvlog.log'
+ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim/xvlog.log' file for more information.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_both_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_valid_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:116]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" Line 1. Module handshake_pipe_both_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" Line 1. Module handshake_pipe_valid_patting doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.handshake_pipe_valid_patting
+Compiling module xil_defaultlib.handshake_pipe_both_patting
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_master" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_slave" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 2014.574 ; gain = 0.000
+run all
+PASS
+
+$finish called at time : 749455 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 123
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'testbench' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj testbench_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_both_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_ready_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module handshake_pipe_valid_patting
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module testbench
+WARNING: [VRFC 10-2019] loop variable declaration is not allowed in this mode of verilog [C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v:116]
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+"xelab -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator 2019.1
+Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_both_patting.v" Line 1. Module handshake_pipe_both_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_ready_patting.v" Line 1. Module handshake_pipe_ready_patting doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/handshake_pipe_valid_patting.v" Line 1. Module handshake_pipe_valid_patting doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.handshake_pipe_ready_patting
+Compiling module xil_defaultlib.handshake_pipe_valid_patting
+Compiling module xil_defaultlib.handshake_pipe_both_patting
+Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot testbench_behav
+INFO: [USF-XSim-69] 'elaborate' step finished in '1' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/vivado_project/Shaking_Patting.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "testbench_behav -key {Behavioral:sim_1:Functional:testbench} -tclbatch {testbench.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+source testbench.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_master" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+WARNING: [Wavedata 42-489] Can't add object "/testbench/data_slave" to the wave window because it has 3200000 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run 1000ns
+
+***** Start	Simulation *****
+Random Seed =           0
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'testbench_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+run all
+PASS
+
+$finish called at time : 749455 ns : File "C:/Users/14817/Desktop/WorkStation_Entry/DatenLord/cy_mit_6.175/Shaking_Patting/source_code/testbench.v" Line 123
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Fri Jun 23 10:21:40 2023...

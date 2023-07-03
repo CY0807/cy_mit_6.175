@@ -108,7 +108,7 @@ module mkProc(Proc);
     rule cycleCounter(csrf.started);
         cycle <= cycle + 1;
         $fwrite(stderr, "Cycle %d -------------------------\n", cycle);
-        if(cycle >= 20) begin
+        if(cycle >= 200) begin
             $fwrite(stderr, "\n test finish, exit\n");
             $finish;
         end

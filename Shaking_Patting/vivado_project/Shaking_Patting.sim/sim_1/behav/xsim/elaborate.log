@@ -1,6 +1,6 @@
 Vivado Simulator 2019.1
 Copyright 1986-1999, 2001-2019 Xilinx, Inc. All Rights Reserved.
-Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench_behav xil_defaultlib.testbench xil_defaultlib.glbl -log elaborate.log 
+Running: D:/SoftwareRoot/Vivado2019.1/Vivado/2019.1/bin/unwrapped/win64.o/xelab.exe -wto c295c62ac13d42a78963495f3d5d871b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot testbench2_behav xil_defaultlib.testbench2 xil_defaultlib.glbl -log elaborate.log 
 Using 2 slave threads.
 Starting static elaboration
 Completed static elaboration
@@ -13,6 +13,7 @@ Time Resolution for simulation is 1ps
 Compiling module xil_defaultlib.handshake_pipe_ready_patting
 Compiling module xil_defaultlib.handshake_pipe_valid_patting
 Compiling module xil_defaultlib.handshake_pipe_both_patting
-Compiling module xil_defaultlib.testbench
+Compiling module xil_defaultlib.myfifo(DATA_DEPTH=1)
+Compiling module xil_defaultlib.testbench2
 Compiling module xil_defaultlib.glbl
-Built simulation snapshot testbench_behav
+Built simulation snapshot testbench2_behav

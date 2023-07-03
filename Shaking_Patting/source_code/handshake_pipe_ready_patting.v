@@ -16,7 +16,7 @@ module handshake_pipe_ready_patting (
   
     assign slave_data = valid_reg ? data_reg : master_data;
     assign slave_valid = valid_reg ? valid_reg : master_valid; // valid_reg | master_valid
-    assign master_ready = ~valid_reg; // 或将valid reg逻辑1/0颠倒实现完全寄存器输出
+    assign master_ready = ~valid_reg; // Q'
 
     always @(posedge clk or negedge rst_n) begin
         if(!rst_n) begin
@@ -34,7 +34,7 @@ module handshake_pipe_ready_patting (
         if(!rst_n) begin
             data_reg <= 32'd0;
         end
-        else if(master_valid && (!slave_ready) && (!valid_reg))begin
+        else if(master_valid && !slave_ready && !valid_reg)begin
             data_reg <= master_data; 
         end
     end
