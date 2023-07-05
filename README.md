@@ -563,37 +563,26 @@ benchmark：在IPC上相比于six stage bht 有所改进，但采用了bypass结
 
 **Cache工作逻辑：**
 
+```
 根据addr中的index得到cache line
-
 将addr中的tag和cache line中的tag比对
-
-If  相同（Hit）：
-
-​		If 指令为Load：
-
-​				根据addr中的offset得到cache line中的数据
-
-​				将该数据发送给处理器
-
-​		Else 指令为store：
-
+If 相同（Hit）：
+​	If 指令为Load：
+​		根据addr中的offset得到cache line中的数据
+​		将该数据发送给处理器
+​	Else（指令为store）：
 Else（Miss）：
-
-​		If cache line的dirty和valid有效，则：
-
-​				将cache line写回ddr
-
-​		向ddr读取数据地址addr所在的数据块data
-
-​		If  指令为Load：
-
-​				将data存入cache line
-
-​		Else （指令为store）：
-
-​				根据addr中的offset修改data
-
+​	If cache line的dirty和valid有效：
+​		将cache line写回ddr
+​	向ddr读取数据地址addr所在的数据块data
+​	If 指令为Load：
+​		将data存入cache line
+​	Else（指令为store）：
+​		根据addr中的offset修改data
 将修改后的data存入cache line
+```
+
+
 
 # Lab8
 
