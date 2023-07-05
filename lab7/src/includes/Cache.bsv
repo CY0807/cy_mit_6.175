@@ -32,14 +32,14 @@ typedef enum {
     WaitFillResp 
 } ReqStatus deriving ( Bits, Eq );
 
-//direct-mapped, write-miss allocate, writeback
+// direct-mapped: Each word in memory maps into a single cache line
+// write-miss allocate, writeback
 module mkCache(WideMem wideMem, Cache ifc);
 
     Vector#(CacheRows, Reg#(CacheLine)) dataArray <- replicateM(mkRegU);
     Vector#(CacheRows, Reg#(Maybe#(CacheTag))) tagArray <- replicateM(mkReg(tagged Invalid));
     Vector#(CacheRows, Reg#(Bool)) dirtyArray <- replicateM(mkReg(False));
     
-    // Fifo#(1, Data) hitQ <- mkBypassFifo;
     Fifo#(1, Data) hitQ <- mkPipelineFifo;
     Reg#(MemReq) missReq <- mkRegU;
     Reg#(ReqStatus) mshr <- mkReg(Ready);
@@ -86,12 +86,13 @@ module mkCache(WideMem wideMem, Cache ifc);
         	dirtyArray[idx] <= False;
         	dataArray[idx] <= data;
         	hitQ.enq(data[wOffset]); 
-        end else begin
+        end 
+        else begin
             dirtyArray[idx] <= True;
         	data[wOffset] = missReq.data; 
         	dataArray[idx] <= data;
         end     
-        
+       
         mshr <= Ready;
     endrule
     
@@ -102,9 +103,11 @@ module mkCache(WideMem wideMem, Cache ifc);
         let currTag = tagArray[idx]; 
         let hit = isValid(currTag) ? fromMaybe(?, currTag) == tag : False;
 
-        if ( hit ) begin
+        if (hit) begin
         	let cacheLine = dataArray[idx];
-        	if ( r.op == Ld ) hitQ.enq(cacheLine[wOffset]);
+        	if (r.op == Ld) begin
+                hitQ.enq(cacheLine[wOffset]);
+            end
         	else begin
         	    cacheLine[wOffset] = r.data;
         	    dataArray[idx] <= cacheLine;

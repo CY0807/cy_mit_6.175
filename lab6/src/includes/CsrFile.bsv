@@ -81,3 +81,60 @@ module mkCsrFile(CsrFile);
         return toHostFifo.first;
     endmethod
 endmodule
+
+(* synthesize *)
+module mkBypassCsrFile(CsrFile);
+    Reg#(Bool) startReg <- mkConfigReg(False);
+
+	// CSR 
+    Ehr#(2, Data) numInsts <- mkEhr(0); // csrInstret -- read only
+    Reg#(Data) cycles <- mkReg(0); // csrCycle -- read only
+	Reg#(Data) coreId <- mkConfigReg(0); // csrMhartid -- read only
+    Fifo#(2, CpuToHostData) toHostFifo <- mkCFFifo; // csrMtohost -- write only
+
+    rule count (startReg);
+        cycles <= cycles + 1;
+        // $display("\nCycle %d ----------------------------------------------------", cycles);
+    endrule
+
+    method Action start(Data id) if(!startReg);
+        startReg <= True;
+        cycles <= 0;
+		coreId <= id;
+    endmethod
+
+    method Bool started;
+        return startReg;
+    endmethod
+
+    method Data rd(CsrIndx idx);
+        return (case(idx)
+                    csrCycle: cycles;
+                    csrInstret: numInsts[1];
+                    csrMhartid: coreId;
+					default: ?;
+                endcase);
+    endmethod
+
+    method Action wr(Maybe#(CsrIndx) csrIdx, Data val);
+        if(csrIdx matches tagged Valid .idx) begin
+            case (idx)
+				csrMtohost: begin
+					// high 16 bits encodes type, low 16 bits are data
+					Bit#(16) hi = truncateLSB(val);
+					Bit#(16) lo = truncate(val);
+					toHostFifo.enq(CpuToHostData {
+						c2hType: unpack(truncate(hi)),
+						data: lo
+					});
+				end
+            endcase
+        end
+        numInsts[0] <= numInsts[0] + 1;
+    endmethod
+
+    method ActionValue#(CpuToHostData) cpuToHost;
+        toHostFifo.deq;
+        return toHostFifo.first;
+    endmethod
+endmodule

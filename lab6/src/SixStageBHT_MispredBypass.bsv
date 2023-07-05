@@ -78,28 +78,28 @@ typedef struct {
 (* synthesize *)
 module mkProc(Proc);
     Ehr#(2, Addr) pcReg <- mkEhr(?);
-    RFile            rf <- mkBypassRFile;
+    RFile            rf <- mkRFile;
 	Scoreboard#(4)   sb <- mkCFScoreboard;
 	FPGAMemory        iMem <- mkFPGAMemory;
     FPGAMemory        dMem <- mkFPGAMemory;
-    CsrFile        csrf <- mkBypassCsrFile;
-    Btb#(6)         btb <- mkBtb; // 64-entry BTB
-    DirectionPred#(8) bht <- mkBypassBht; 
+    CsrFile        csrf <- mkCsrFile;
+    Btb#(6)         btb <- mkBypassBtb; // 64-entry BTB
+    DirectionPred#(8) bht <- mkBht; 
 
 	// global epoch for redirection from Execute stage
-	Reg#(Bool) exeEpoch <- mkReg(False);
-    Reg#(Bool) decEpoch <- mkReg(False);
+	Ehr#(2, Bool) exeEpoch <- mkEhr(False);
+    Ehr#(2, Bool) decEpoch <- mkEhr(False);
 
 	// EHR for redirection
 	Ehr#(2, Maybe#(ExeRedirect)) exeRedirect <- mkEhr(Invalid);
     Ehr#(2, Maybe#(DecRedirect)) decRedirect <- mkEhr(Invalid);
 
 	// FIFO between two stages
-	Fifo#(1, Fetch2Decode) f2dFifo <- mkPipelineFifo;
-    Fifo#(1, Decode2RegFetch) d2rFifo <- mkPipelineFifo;
-    Fifo#(1, RegFetch2Execute) r2eFifo <- mkPipelineFifo;
-    Fifo#(1, Maybe#(Execute2Memory)) e2mFifo <- mkPipelineFifo;
-    Fifo#(1, Maybe#(Memory2WriteBack)) m2wFifo <- mkPipelineFifo;
+	Fifo#(2, Fetch2Decode) f2dFifo <- mkCFFifo;
+    Fifo#(2, Decode2RegFetch) d2rFifo <- mkCFFifo;
+    Fifo#(2, RegFetch2Execute) r2eFifo <- mkCFFifo;
+    Fifo#(2, Maybe#(Execute2Memory)) e2mFifo <- mkCFFifo;
+    Fifo#(2, Maybe#(Memory2WriteBack)) m2wFifo <- mkCFFifo;
 
     Bool memReady = iMem.init.done && dMem.init.done;
 
@@ -107,39 +107,34 @@ module mkProc(Proc);
 
     rule cycleCounter(csrf.started);
         cycle <= cycle + 1;
-        $fwrite(stderr, "Cycle %d -------------------------\n", cycle);
-        if(cycle >= 200) begin
-            $fwrite(stderr, "\n test finish, exit\n");
-            $finish;
-        end
+        $display("Cycle %d -------------------------", cycle);
     endrule
 
 	rule doFetch(csrf.started);
-		iMem.req(MemReq{op: Ld, addr: pcReg[0], data: ?});
-		Addr predPc = btb.predPc(pcReg[0]);
-        pcReg[0] <= predPc;
+		iMem.req(MemReq{op: Ld, addr: pcReg[1], data: ?});
+		Addr predPc = btb.predPc(pcReg[1]);
+        pcReg[1] <= predPc;
 
         Fetch2Decode f2d = Fetch2Decode{
-            pc: pcReg[0],
+            pc: pcReg[1],
 			predPc: predPc,
-			eepoch: exeEpoch,
-            depoch: decEpoch
+			eepoch: exeEpoch[1],
+            depoch: decEpoch[1]
         };
 
         f2dFifo.enq(f2d);
-        $fwrite(stderr, "[%d] doFetch: PC = %x\n", cycle, pcReg[0]);
+        $display("[%d] Inst Fetch: PC = %x", cycle, pcReg[1]);
     endrule
 	
     rule doDecode(csrf.started);
 		Fetch2Decode f2d = f2dFifo.first;
         f2dFifo.deq;
-        $fwrite(stderr, "[%d] doDecode\n", cycle);
 
         // Even if epoch is wrong, we need to consume the data from memory, or it will queued.
         let inst <- iMem.resp;
 
-        if (f2d.eepoch == exeEpoch) begin
-            if (f2d.depoch == decEpoch) begin
+        if (f2d.eepoch == exeEpoch[0]) begin
+            if (f2d.depoch == decEpoch[0]) begin
                 DecodedInst dInst = decode(inst);
 
                 $display("[%d] Decode: PC = %x, inst = %x, expanded = ", cycle, f2d.pc, inst, showInst(inst));
@@ -179,8 +174,7 @@ module mkProc(Proc);
     rule doRegFetch(csrf.started);
 
         Decode2RegFetch d2r = d2rFifo.first;
-        $fwrite(stderr, "[%d] doRegFetch\n", cycle);
-        if (d2r.eepoch == exeEpoch) begin
+        if (d2r.eepoch == exeEpoch[0]) begin
         
             // reg read
             Data rVal1 = rf.rd1(fromMaybe(?, d2r.dInst.src1));
@@ -221,9 +215,9 @@ module mkProc(Proc);
 		r2eFifo.deq;
 		let r2e = r2eFifo.first;
 
-        $fwrite(stderr, "[%d] Execute: PC = %x\n", cycle, r2e.pc);
+        $display("[%d] Execute: PC = %x", cycle, r2e.pc);
 
-		if(r2e.eepoch != exeEpoch) begin
+		if(r2e.eepoch != exeEpoch[0]) begin
 			e2mFifo.enq(tagged Invalid);
 			$display("[%d] Execute: Kill instruction", cycle);
 		end else begin
@@ -242,10 +236,9 @@ module mkProc(Proc);
                 bht.update(r2e.pc, eInst.brTaken);
             end
 
-
             // check unsupported instruction at commit time. Exiting
             if(eInst.iType == Unsupported) begin
-                $display("[%d] ERROR: Executing unsupported instruction at pc: %x. Exiting\n", cycle, r2e.pc);
+                $fwrite(stderr, "[%d] ERROR: Executing unsupported instruction at pc: %x. Exiting\n", cycle, r2e.pc);
                 $finish;
             end
             Execute2Memory e2m = Execute2Memory {
@@ -267,7 +260,6 @@ module mkProc(Proc);
 
         let e2m_maybe = e2mFifo.first;
         e2mFifo.deq();
-        $fwrite(stderr, "[%d] doMemory\n", cycle);
 
         if (e2m_maybe matches tagged Valid .e2m) begin
             let eInst = e2m.eInst;
@@ -300,7 +292,6 @@ module mkProc(Proc);
     rule doWriteBack(csrf.started);
         let m2w_maybe = m2wFifo.first;
         m2wFifo.deq();
-        $fwrite(stderr, "[%d] doWriteBack\n", cycle);
 
         if (m2w_maybe matches tagged Valid .m2w) begin
             let eInst = m2w.eInst;
@@ -325,16 +316,14 @@ module mkProc(Proc);
     (* fire_when_enabled *)
 	(* no_implicit_conditions *)
 	rule cononicalizeRedirect(csrf.started);
-        $fwrite(stderr, "[%d] do cononicalizeRedirect\n", cycle);
 		if(exeRedirect[1] matches tagged Valid .r) begin
-			// fix mispred
-			pcReg[1] <= r.nextPc;
-			exeEpoch <= !exeEpoch; // flip epoch
+            pcReg[0] <= r.nextPc;
+			exeEpoch[0] <= !exeEpoch[0]; // flip epoch
 			btb.update(r.pc, r.nextPc); // train BTB
 			$display("[%d] Fetch: Mispredict, redirected by Execute", cycle);
         end else if(decRedirect[1] matches tagged Valid .r) begin
-            pcReg[1] <= r.nextPc;
-			decEpoch <= !decEpoch; // flip epoch
+            pcReg[0] <= r.nextPc;
+			decEpoch[0] <= !decEpoch[0]; // flip epoch
 			btb.update(r.pc, r.nextPc); // train BTB
 			$display("[%d] Fetch: Mispredict, redirected by Decode", cycle);
         end

@@ -447,7 +447,7 @@ predicts the location of the next instruction to fetch based on the current valu
 
 **前10个时钟周期rule的调度顺序：**
 
-<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom: 80%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom: 80%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom: 80%;" />
+<img src="./image/image-20230624101844101.png" alt="image-20230624101844101" style="zoom: 50%;" /><img src="./image/image-20230624101911105.png" alt="image-20230624101911105" style="zoom: 50%;" /><img src="./image/image-20230624101933657.png" alt="image-20230624101933657" style="zoom: 50%;" />
 
 **影响调度顺序的因素：**
 
@@ -483,7 +483,7 @@ benchmark：
 
 前20个时钟周期rule的调度顺序：
 
-<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom: 80%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom: 80%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom: 80%;" />
+<img src="./image/image-20230624105822813.png" alt="image-20230624105822813" style="zoom: 50%;" /><img src="./image/image-20230624105848206.png" alt="image-20230624105848206" style="zoom: 50%;" /><img src="./image/image-20230624105902130.png" alt="image-20230624105902130" style="zoom: 50%;" />
 
 **影响调度顺序的因素：**
 
@@ -503,11 +503,37 @@ doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononical
 
 
 
-**5、改用长度为2的Pipeline FIFO后rule的调度顺序：**
+**5、改进的Pipeline FIFO后rule的调度顺序：**
 
-<img src="./image/image-20230627102607856.png" alt="image-20230627102607856" style="zoom:50%;" /><img src="./image/image-20230627102633451.png" alt="image-20230627102633451" style="zoom:50%;" /><img src="./image/image-20230627102653701.png" alt="image-20230627102653701" style="zoom:50%;" />
+改进内容：
+
+（1）采用Bypass Register File
+
+（2）采用Bypass Branch History Table ( BHT )
+
+（3）采用Bypass Csr File
+
+前10个时钟周期调度顺序：
+
+<img src="./image/image-20230703234729294.png" alt="image-20230703234729294" style="zoom: 50%;" /><img src="./image/image-20230703234709812.png" alt="image-20230703234709812" style="zoom: 50%;" /><img src="./image/image-20230703234748941.png" alt="image-20230703234748941" style="zoom: 50%;" />
 
 
+
+**6、在都改用长度为1的Bypass FIFO后rule的调度顺序：**
+
+<img src="./image/image-20230704001001472.png" alt="image-20230704001001472" style="zoom: 50%;" /><img src="./image/image-20230704001043717.png" alt="image-20230704001043717" style="zoom: 50%;" /><img src="./image/image-20230704001121970.png" alt="image-20230704001121970" style="zoom: 50%;" />
+
+分析：
+
+（1）在Bypass Fifo下，流水线结构失效，变成了组合逻辑
+
+（2）doFetch和doWriteBack阶段和其他分开，是因为访存有1个时钟周期的延迟（FPGA Block Ram）
+
+**2、six stage bht 将misprediction改为bypass：**
+
+benchmark：在IPC上相比于six stage bht 有所改进，但采用了bypass结构使得关键路径更长了
+
+<img src="./image/image-20230704121452473.png" alt="image-20230704121452473" style="zoom:33%;" /><img src="./image/image-20230704121504477.png" alt="image-20230704121504477" style="zoom:33%;" /><img src="./image/image-20230704121516729.png" alt="image-20230704121516729" style="zoom:33%;" /><img src="./image/image-20230704121530049.png" alt="image-20230704121530049" style="zoom:33%;" /><img src="./image/image-20230704121540844.png" alt="image-20230704121540844" style="zoom:33%;" />
 
 ## six stage bonus
 
@@ -539,19 +565,19 @@ doWriteBack < doMemory < doExecute < doRegFetch < doDecode < doFetch < cononical
 
 根据addr中的index得到cache line
 将addr中的tag和cache line中的tag比对
-If 相同，则Hit：
-	If 指令为Load：
-		根据addr中的offset得到cache line中的数据
-		将该数据发送给处理器
-	Else 指令为store：
-Else 则Miss：
-	If cache line的dirty和valid有效，则：
-		将cache line写回ddr
-	向ddr读取数据地址addr所在的数据块data
-	If 指令为Load：
-		将data存入cache line
-	Else 指令为store：
-		根据addr中的offset修改data
+If  相同（Hit）：
+		If 指令为Load：
+				根据addr中的offset得到cache line中的数据
+				将该数据发送给处理器
+		Else 指令为store：
+Else（Miss）：
+		If cache line的dirty和valid有效，则：
+				将cache line写回ddr
+		向ddr读取数据地址addr所在的数据块data
+		If  指令为Load：
+				将data存入cache line
+		Else （指令为store）：
+				根据addr中的offset修改data
 将修改后的data存入cache line
 
 # Lab8

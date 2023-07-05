@@ -86,11 +86,9 @@ always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         cnt_out <= 0;
     end
-    else begin
-        if(rd_en) begin
-            cnt_out <= cnt_out + 1;
-            data_out_array[cnt_out] <= data_out;
-        end
+    else if(rd_en) begin
+        cnt_out <= cnt_out + 1;
+        data_out_array[cnt_out] <= data_out;
     end
 end  
 
@@ -119,7 +117,7 @@ end
 myfifo
 #(
     .DATA_WIDTH(32),
-    .DATA_DEPTH(3)
+    .DATA_DEPTH(2)
 )
 myfifo_inst
 (

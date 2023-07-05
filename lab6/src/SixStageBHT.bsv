@@ -224,7 +224,7 @@ module mkProc(Proc);
 			// execute
 			ExecInst eInst = exec(r2e.dInst, r2e.rVal1, r2e.rVal2, r2e.pc, r2e.predPc, r2e.csrVal);
 
-            if(eInst.mispredict) begin //no btb update?
+            if(eInst.mispredict) begin
                 $display("[%d] Execute finds misprediction: PC = %x", cycle, r2e.pc);
                 exeRedirect[0] <= Valid (ExeRedirect {
                     pc: r2e.pc,

@@ -78,13 +78,13 @@ typedef struct {
 (* synthesize *)
 module mkProc(Proc);
     Ehr#(2, Addr) pcReg <- mkEhr(?);
-    RFile            rf <- mkBypassRFile;
+    RFile            rf <- mkRFile;
 	Scoreboard#(4)   sb <- mkCFScoreboard;
 	FPGAMemory        iMem <- mkFPGAMemory;
     FPGAMemory        dMem <- mkFPGAMemory;
-    CsrFile        csrf <- mkBypassCsrFile;
+    CsrFile        csrf <- mkCsrFile;
     Btb#(6)         btb <- mkBtb; // 64-entry BTB
-    DirectionPred#(8) bht <- mkBypassBht; 
+    DirectionPred#(8) bht <- mkBht; 
 
 	// global epoch for redirection from Execute stage
 	Reg#(Bool) exeEpoch <- mkReg(False);
@@ -95,11 +95,11 @@ module mkProc(Proc);
     Ehr#(2, Maybe#(DecRedirect)) decRedirect <- mkEhr(Invalid);
 
 	// FIFO between two stages
-	Fifo#(1, Fetch2Decode) f2dFifo <- mkPipelineFifo;
-    Fifo#(1, Decode2RegFetch) d2rFifo <- mkPipelineFifo;
-    Fifo#(1, RegFetch2Execute) r2eFifo <- mkPipelineFifo;
-    Fifo#(1, Maybe#(Execute2Memory)) e2mFifo <- mkPipelineFifo;
-    Fifo#(1, Maybe#(Memory2WriteBack)) m2wFifo <- mkPipelineFifo;
+	Fifo#(1, Fetch2Decode) f2dFifo <- mkBypassFifo;
+    Fifo#(1, Decode2RegFetch) d2rFifo <- mkBypassFifo;
+    Fifo#(1, RegFetch2Execute) r2eFifo <- mkBypassFifo;
+    Fifo#(1, Maybe#(Execute2Memory)) e2mFifo <- mkBypassFifo;
+    Fifo#(1, Maybe#(Memory2WriteBack)) m2wFifo <- mkBypassFifo;
 
     Bool memReady = iMem.init.done && dMem.init.done;
 
@@ -108,7 +108,7 @@ module mkProc(Proc);
     rule cycleCounter(csrf.started);
         cycle <= cycle + 1;
         $fwrite(stderr, "Cycle %d -------------------------\n", cycle);
-        if(cycle >= 200) begin
+        if(cycle >= 20) begin
             $fwrite(stderr, "\n test finish, exit\n");
             $finish;
         end
@@ -230,7 +230,7 @@ module mkProc(Proc);
 			// execute
 			ExecInst eInst = exec(r2e.dInst, r2e.rVal1, r2e.rVal2, r2e.pc, r2e.predPc, r2e.csrVal);
 
-            if(eInst.mispredict) begin
+            if(eInst.mispredict) begin //no btb update?
                 $display("[%d] Execute finds misprediction: PC = %x", cycle, r2e.pc);
                 exeRedirect[0] <= Valid (ExeRedirect {
                     pc: r2e.pc,
