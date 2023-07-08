@@ -269,7 +269,7 @@ endmodule
 
 <img src="./image/image-20230610160343325.png" alt="image-20230610160343325" style="zoom:33%;" />
 
-1、Confict FIFO：rule之间涉及到double write冲突，因此在编译时有warning：
+1、Confict FIFO：rule之间涉及到double write产生conflict，因此在编译时有warning：
 
 <img src="./image/image-20230610161729546.png" alt="image-20230610161729546" style="zoom:33%;" />
 
@@ -361,7 +361,7 @@ endinterface
 
 # Lab5
 
-Exercise 0:
+**Exercise 0:**
 
 ```
 make build.bluesim VPROC=ONECYCLE 
@@ -375,7 +375,7 @@ make build.bluesim VPROC=ONECYCLE
 
 <img src="./image/image-20230615214859913.png" alt="image-20230615214859913" style="zoom:33%;" />
 
-exercise 1:
+**exercise 1:**
 
 ```
 ./run_bmarks.sh
@@ -383,15 +383,15 @@ exercise 1:
 
 <img src="./image/image-20230616190525181.png" alt="image-20230616190525181" style="zoom:33%;" />
 
-TWO_STAGE BenchMark:
+**TWO_STAGE BenchMark:**
 
 <img src="./image/image-20230617162150065.png" alt="image-20230617162150065" style="zoom: 33%;" /><img src="./image/image-20230617162208284.png" alt="image-20230617162208284" style="zoom:33%;" /><img src="./image/image-20230617162225457.png" alt="image-20230617162225457" style="zoom:33%;" /><img src="./image/image-20230617162246314.png" alt="image-20230617162246314" style="zoom:33%;" /><img src="./image/image-20230617162303809.png" alt="image-20230617162303809" style="zoom:33%;" />
 
-TWO_STAGE with Branch Target Buffer(BTB) BenchMark
+**TWO_STAGE with Branch Target Buffer(BTB) BenchMark**
 
 <img src="./image/image-20230617164603431.png" alt="image-20230617164603431" style="zoom:33%;" /><img src="./image/image-20230617164626654.png" alt="image-20230617164626654" style="zoom:33%;" /><img src="./image/image-20230617164645712.png" alt="image-20230617164645712" style="zoom:33%;" /><img src="./image/image-20230617164701279.png" alt="image-20230617164701279" style="zoom:33%;" /><img src="./image/image-20230617164714818.png" alt="image-20230617164714818" style="zoom:33%;" />
 
-**Harzards:**
+**重点:**
 
 **1、structural harzard**：results from reads cannot be used in the same cycle as the reads are performed ( come from delayed mem); 
 
@@ -407,17 +407,13 @@ solve: Bypass Register File; ***Scoreboard*** ( A data structure to keep  track 
 
 (not in Lab5, in Lab6)
 
-**solve**: stall, bypass, speculate ( if incorrect then kill )
+solve: stall, bypass, speculate ( if incorrect then kill )
 
-
-
-**branch target buffer** ( BTB )：
+**4、branch target buffer** ( BTB )：
 
 predicts the location of the next instruction to fetch based on the current value of the program counter
 
-
-
-**predict accuracy in lab5 two stage：**
+**5、predict accuracy in lab5 two stage：**
 
 1-(cycle-inst)/inst = (2*inst-cycle)/inst = 2-CPI
 
@@ -564,25 +560,31 @@ benchmark：在IPC上相比于six stage bht 有所改进，但采用了bypass结
 **Cache工作逻辑：**
 
 ```
-根据addr中的index得到cache line
+1、req method输入请求后：
 将addr中的tag和cache line中的tag比对
 If 相同（Hit）：
-​	If 指令为Load：
-​		根据addr中的offset得到cache line中的数据
-​		将该数据发送给处理器
-​	Else（指令为store）：
+	根据addr中的index得到cache line
+	If 指令为Load：
+		根据addr中的offset得到cache line中的数据
+		将该数据发送给处理器
+	Else（指令为store）：
+		根据addr中的offset更新cache line中的数据
+		将该数据的dirty信号使能
 Else（Miss）：
-​	If cache line的dirty和valid有效：
-​		将cache line写回ddr
-​	向ddr读取数据地址addr所在的数据块data
-​	If 指令为Load：
-​		将data存入cache line
-​	Else（指令为store）：
-​		根据addr中的offset修改data
-将修改后的data存入cache line
+	if cache line的数据dirty信号有效：
+		将dirty数据写回memory
+	向ddr读取数据地址addr所在的数据块data
+	If 指令为Load：
+		将该cache line的dirty信号失能
+		将data存入cache line
+	Else（指令为store）：
+		将该cache line的dirty信号使能
+		根据addr中的offset修改data
+		将修改后的data存入cache line
+
+2、resp method调用：
+对于cache到core的fifo，返回其first值，并进行deq操作
 ```
-
-
 
 # Lab8
 
@@ -597,3 +599,95 @@ Else（Miss）：
 3、permission test
 
 <img src="./image/image-20230626123716606.png" alt="image-20230626123716606" style="zoom:33%;" />
+
+
+
+# Project
+
+**1、双核处理器结构：**
+
+<img src="./image/image-20230708113931643.png" alt="image-20230708113931643" style="zoom: 50%;" />
+
+注意：
+
+（1）两个Instruction Cache由于没有store机制因此不需要同步，两个Data Cache采用MSI协议达到Cache Coherence
+
+（2）Message Router起到Cache总线的功能，处理两个子cache和parent（memory）的通信
+
+（3）Parent Protocol Processor 处理 parent端的MSI协议内容，子端的MSI协议在两个Data Cache内部实现
+
+（4）message passing程序实现结构：
+
+<img src="./image/image-20230708152830662.png" alt="image-20230708152830662" style="zoom:50%;" />
+
+**MSI协议：**
+
+<img src="./image/image-20230708150743366.png" alt="image-20230708150743366" style="zoom:50%;" />
+
+（1）当read miss发生时：
+
+- 若其他cache在该地址为M状态，则将dirty数据写回memory，并设置其状态为S
+- 从memory中读取数据，并将该地址状态设置为S
+
+（2）当write miss发生时：
+
+- 将其他cache的该地址失能（invalidate），若其他cache在该地址为M状态，则将dirty数据写回memory
+- 从memory中读取数据，并将该地址状态设置为M，再更新cache数据
+
+（3）cache之间状态获取原则：
+
+- 处理器（或cache）仅能查看（或修改）自己的状态
+- 其他cache的状态通过发送request和response可以得知（通过message fifo）
+- 父节点的cache通过一个directory保存其所有子节点cache的状态
+
+**2、Message Router 调度优先级：**
+
+（1）c2r,c2m resp > m2r,r2c resp > m2r,r2c req > c2r,r2m req
+
+（2）core 0 > core 1
+
+其中：c代表core，r代表router，m代表memory，req为请求，resp为回应
+
+**3、Parent Protocol Processor 处理逻辑：**
+
+（1）在收到来自child（core）的req后，发送DownGrade req给除该child的所有其他child，在等待所有child的DownGrade完成后，向memory发送访存请求，等待并得到数据后发送resp返回给该child
+
+（2）接受来自child的resp，更新memory和自身的数据，其优先级最高
+
+**4、DCache 处理逻辑**
+
+```
+1、req method输入请求后：
+If 相同（Hit）：
+	If 指令为Load：
+		If 请求数据处的状态为M或S：
+			将cache对应的数据发送给处理器（resqQ fifo：enq）
+		Else if 请求数据处的状态为I：
+			向memory发送数据请求（req），等待并得到数据
+			将得到的数据发送给处理器
+			更新cache中的数据和状态
+	Else（指令为store）：
+		If 请求数据处的状态为M
+			更新cache line中的数据
+		Else
+			向memory发送数据请求（req），等待并得到数据
+			根据store指令的内容更新数据
+			更新cache中的数据和状态（目录）
+Else（Miss）：
+	若index对应的数据状态不为I：
+		向memory发送resp，将原addr的数据对应部分的状态设置为I
+	向memory发送数据请求（req），等待并得到数据
+	If 指令为Load：
+		将得到的数据发送给处理器
+		更新cache中的数据和状态
+	Else if 指令为store：
+		根据store指令的内容更新数据
+	更新cache中的数据和状态（目录）
+	
+2、resp method调用：
+对于cache到core的fifo，返回其first值，并进行deq操作
+
+3、同步地，在后台处理来自memory的DownGrad请求（req）
+	根据req的内容对cache目录进行降级操作
+```
+
