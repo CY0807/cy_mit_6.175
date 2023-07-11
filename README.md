@@ -659,35 +659,89 @@ Else（Miss）：
 ```
 1、req method输入请求后：
 If 相同（Hit）：
-	If 指令为Load：
+	If 指令为Ld或Lr：
+		If 指令为Lr：
+			更新linkAddr
 		If 请求数据处的状态为M或S：
 			将cache对应的数据发送给处理器（resqQ fifo：enq）
 		Else if 请求数据处的状态为I：
 			向memory发送数据请求（req），等待并得到数据
 			将得到的数据发送给处理器
 			更新cache中的数据和状态
-	Else（指令为store）：
-		If 请求数据处的状态为M
+			If 指令为Lr：
+				更新linkAddr
+	Else（指令为St或Sc）：
+		If linkAddr状态异常：
+			向处理器发送scFail信号
+			将linkAddr状态置为invalid
+		Else if 请求数据处的状态为M
 			更新cache line中的数据
+			If 指令为Sc：
+				向处理器发送scSucc信号
+				将linkAddr状态置为invalid
 		Else
+			If 指令为Sc：
+				If linkAddr状态正常：
+					向处理器发送scSucc信号
+				Else：
+					向处理器发送scFail信号
+				将linkAddr状态置为invalid
 			向memory发送数据请求（req），等待并得到数据
 			根据store指令的内容更新数据
 			更新cache中的数据和状态（目录）
 Else（Miss）：
-	若index对应的数据状态不为I：
-		向memory发送resp，将原addr的数据对应部分的状态设置为I
-	向memory发送数据请求（req），等待并得到数据
-	If 指令为Load：
-		将得到的数据发送给处理器
-		更新cache中的数据和状态
-	Else if 指令为store：
-		根据store指令的内容更新数据
-	更新cache中的数据和状态（目录）
-	
+	If 指令为Sc且linkAddr状态异常：
+		向处理器发送scFail信号
+		将linkAddr状态置为invalid
+	Else：
+    	If index对应的数据状态不为I：
+			向memory发送resp，将原addr的数据对应部分的状态设置为I
+		向memory发送数据请求（req），等待并得到数据
+		If 指令为Ld或Lr：
+			将得到的数据发送给处理器
+			更新cache中的数据和状态
+			If 指令为Lr：
+				更新linkAddr
+		Else if 指令为St：
+			根据store指令的内容更新从memory中得到的数据
+			更新cache中的数据
+		Else if 指令为Sc：
+			if linkAddr状态正常：
+				向处理器发送scSucc信号
+				根据store指令的内容更新从memory中得到的数据
+				更新cache中的数据
+			Else
+				向处理器发送scFail信号
+			将linkAddr状态置为invalid
+		更新cache中的目录的状态
+
 2、resp method调用：
 对于cache到core的fifo，返回其first值，并进行deq操作
 
-3、同步地，在后台处理来自memory的DownGrad请求（req）
+3、同步地，在后台处理来自memory的DownGrade请求（req）
 	根据req的内容对cache目录进行降级操作
 ```
 
+**unit test:**
+
+（1）Message Fifo：
+
+<img src="./image/image-20230709154203678.png" alt="image-20230709154203678" style="zoom:33%;" />
+
+（2）Cache：
+
+<img src="./image/image-20230709162917446.png" alt="image-20230709162917446" style="zoom:33%;" />
+
+（3）Parent Protocol Processor：
+
+<img src="./image/image-20230709163413043.png" alt="image-20230709163413043" style="zoom:33%;" />
+
+**benchmark：**
+
+<img src="./image/image-20230709184741698.png" alt="image-20230709184741698" style="zoom:33%;" /><img src="./image/image-20230709184631502.png" alt="image-20230709184631502" style="zoom:33%;" /><img src="./image/image-20230709184655211.png" alt="image-20230709184655211" style="zoom:33%;" /><img src="./image/image-20230709184800809.png" alt="image-20230709184800809" style="zoom:33%;" /><img src="./image/image-20230709184838546.png" alt="image-20230709184838546" style="zoom:33%;" />
+
+**multicore benchmark：**
+
+<img src="./image/image-20230709190640466.png" alt="image-20230709190640466" style="zoom:33%;" /><img src="./image/image-20230709190656235.png" alt="image-20230709190656235" style="zoom:33%;" /><img src="./image/image-20230709190718912.png" alt="image-20230709190718912" style="zoom:33%;" /><img src="./image/image-20230709190731403.png" alt="image-20230709190731403" style="zoom:33%;" /><img src="./image/image-20230709190756495.png" alt="image-20230709190756495" style="zoom:33%;" />
+
+<img src="./image/image-20230709190816377.png" alt="image-20230709190816377" style="zoom:33%;" /><img src="./image/image-20230709190833072.png" alt="image-20230709190833072" style="zoom:33%;" />
