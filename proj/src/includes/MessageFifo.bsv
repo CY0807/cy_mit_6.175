@@ -26,7 +26,7 @@ module mkMessageFifo(MessageFifo#(n));
     endmethod
 
     method CacheMemMessage first;
-        if(fifo_resp.notEmpty) begin
+        if (fifo_resp.notEmpty) begin
             return tagged Resp fifo_resp.first;
         end
         else begin

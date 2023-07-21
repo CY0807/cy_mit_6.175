@@ -642,17 +642,30 @@ Else（Miss）：
 
 **2、Message Router 调度优先级：**
 
-（1）c2r,c2m resp > m2r,r2c resp > m2r,r2c req > c2r,r2m req
-
-（2）core 0 > core 1
-
-其中：c代表core，r代表router，m代表memory，req为请求，resp为回应
+- resp>req
 
 **3、Parent Protocol Processor 处理逻辑：**
 
-（1）在收到来自child（core）的req后，发送DownGrade req给除该child的所有其他child，在等待所有child的DownGrade完成后，向memory发送访存请求，等待并得到数据后发送resp返回给该child
+（1）逻辑1：接受到child的升级req
 
-（2）接受来自child的resp，更新memory和自身的数据，其优先级最高
+```
+对有所就绪状态的其他child，且grade变化不是compatible的，发送降级的req信号
+将发送降级req信号的child的对应cache处设置为未就绪状态
+if req中的grade变化是compatible的，且其他child是处于就绪状态：
+	if req的地址miss：
+		向memory发送请求
+		等待memory的数据
+	向child发送resp	
+	更新parent的目录
+```
+
+（2）逻辑2：接受到child的降级resp，其优先级更高
+
+```
+若child的state为M，则向memory写回dirty数据
+更新parent的目录
+将该child的对应cache处设置为就绪状态
+```
 
 **4、DCache 处理逻辑**
 

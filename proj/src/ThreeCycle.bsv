@@ -10,7 +10,7 @@ import Ehr::*;
 import GetPut::*;
 import ICache::*;
 import DCache::*;
-import DCacheLHUSM::*;
+import DCacheStQ::*;
 import DCacheLHUSM::*;
 import MemReqIDGen::*;
 import CacheTypes::*;
@@ -42,7 +42,8 @@ module mkCore#(CoreID id)(
     MessageFifo#(8)   toParentQ <- mkMessageFifo;
     MessageFifo#(8) fromParentQ <- mkMessageFifo;
     DCache               dCache <- mkDCacheLHUSM(id, toMessageGet(fromParentQ), toMessagePut(toParentQ), refDMem);
-
+    //DCache               dCache <- mkDCacheStQ(id, toMessageGet(fromParentQ),toMessagePut(toParentQ),refDMem);
+    //DCache               dCache <- mkDCache(id, toMessageGet(fromParentQ),toMessagePut(toParentQ),refDMem);
     rule doFetch if (csrf.started && stage == Fetch);
         iCache.req(pc);
         stage <= Execute;

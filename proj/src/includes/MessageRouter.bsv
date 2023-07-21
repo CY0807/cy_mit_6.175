@@ -12,6 +12,11 @@ module mkMessageRouter(
 );
     Reg#(CoreID) cache_start <- mkReg(0);
 
+    // router rules:
+    // 1. Responses cannot be blocked by requests.
+    // 2. A request cannot overtake a response for the same address.
+    // 3. Core priors changes every cycle to avoid starving.
+
     rule cache2parent;
         CoreID cache_select = 0;
         CoreID cache_iter = 0;
@@ -24,7 +29,6 @@ module mkMessageRouter(
             Bit#(TLog#(TAdd#(CoreNum,1))) tmp_iter = zeroExtend(cache_select+fromInteger(i));
             Bit#(TLog#(TAdd#(CoreNum,1))) max_iter = fromInteger(valueOf(CoreNum));
             tmp_iter = tmp_iter % max_iter;
-            $display("%b", tmp_iter);
             cache_iter = truncate(tmp_iter);
 
             let cache_tmp = c2r[cache_iter];
@@ -61,7 +65,6 @@ module mkMessageRouter(
             cache_start <= cache_start + 1;
         end
     endrule
-
 
     rule parent2cache;
         CacheMemMessage msg = m2r.first;

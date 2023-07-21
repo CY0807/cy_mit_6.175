@@ -72,7 +72,7 @@ module mkStQ(StQ#(n));
     Bool valid_pass_one[valueOf(n)];
     Bool valid_pass_two[valueOf(n)];
 
-    for( Integer i = 0 ; i < valueOf(n) ; i = i+1 ) begin
+    for( Integer i = 0; i < valueOf(n); i = i+1 ) begin
         valid_pass_one[i] = fromInteger(i) >= deqP && (deqP_lt_enqP ? fromInteger(i) < enqP : !empty);
         valid_pass_two[i] = fromInteger(i) < enqP && !deqP_lt_enqP && !empty;
     end
